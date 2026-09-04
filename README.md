@@ -31,7 +31,7 @@ och konsumeras av regelramverk som behöver OUL-uppgifter, till exempel
 
 ## Användning
 
-Inject `OulUppgiftService` och anropa `createOulUppgift` med ett `OulUppgiftSpec`:
+Inject `OulUppgiftService` och anropa `createOulUppgift` med en instans av `OulUppgiftSpec`:
 
 ```java
 @Inject
