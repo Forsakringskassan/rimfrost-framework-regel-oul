@@ -53,26 +53,3 @@ CREATE TABLE regel_oul_test_process_topic_info (
     created_at       TIMESTAMPTZ  NOT NULL,
     updated_at       TIMESTAMPTZ  NOT NULL
 );
-
--- KompletteringTillstandEntity is owned by rimfrost-framework-regel but is
--- also indexed here (via quarkus.index-dependency.rimfrost-regel), so
--- Hibernate expects the prefixed table to exist. A real consumer service
--- would provide this migration; we replicate it for framework-owned tests.
-CREATE TABLE regel_oul_test_komplettering_tillstand (
-    handlaggning_id       UUID         NOT NULL PRIMARY KEY,
-    oul_uppgift_id        UUID         NOT NULL,
-    reply_to              VARCHAR(255) NOT NULL,
-    regel_request_id      UUID         NOT NULL,
-    aktivitet_id          UUID         NOT NULL,
-    type                  VARCHAR(255) NOT NULL,
-    kogitorootprocid      VARCHAR(255) NOT NULL,
-    kogitorootprociid     UUID         NOT NULL,
-    kogitoparentprociid   UUID         NOT NULL,
-    kogitoprocid          VARCHAR(255) NOT NULL,
-    kogitoprocinstanceid  UUID         NOT NULL,
-    kogitoprocist         VARCHAR(255) NOT NULL,
-    kogitoprocversion     VARCHAR(255) NOT NULL,
-    version               BIGINT       NOT NULL DEFAULT 0,
-    created_at            TIMESTAMPTZ  NOT NULL,
-    updated_at            TIMESTAMPTZ  NOT NULL
-);
