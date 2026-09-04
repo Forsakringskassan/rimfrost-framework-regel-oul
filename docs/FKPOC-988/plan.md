@@ -109,11 +109,11 @@ steps touching runtime code also end with `mvn test`.
   `@Startup` bean needed. Correctly stays silent for consumers who disable
   hibernate (`quarkus.hibernate-orm.enabled=false`) and thus don't use the
   storage at all.
-- Naming strategy wiring: consumers set
-  `quarkus.hibernate-orm.physical-naming-strategy=se.fk.rimfrost.framework.regel.oul.storage.internal.RegelPhysicalNamingStrategy`
-  in their own `application.properties` (same pattern as regel-manuell today).
-  Not defaulted in the framework's own properties to avoid imposing the prefix
-  on consumer-owned entities.
+- Naming strategy wiring: defaulted in the framework's own `application.properties`
+  (`quarkus.hibernate-orm.physical-naming-strategy=se.fk.rimfrost.framework.regel.oul.storage.internal.RegelPhysicalNamingStrategy`).
+  Persistence and datasource are also enabled by default (`quarkus.datasource.active=true`,
+  `quarkus.hibernate-orm.enabled=true`) — any consumer of this framework requires
+  persistence, so disabling it by default would be a footgun.
 - `mvn test-compile -q`.
 
 ### 3. Define the OUL SPI DTO — `OulUppgiftSpec`
@@ -309,12 +309,11 @@ All test classes:
 
 Additional WireMock stubs needed beyond `WireMockRegelOul` today:
 - `WireMockRegelOul` currently only stubs OUL `/uppgifter` POSTs. The
-  handläggning GET/PUT stubs must be added — either as static JSON mapping
-  files under `src/test/resources/mappings/` (rimfrost pattern, see
-  `regel-manuell/src/test/resources/mappings/get-handlaggning-*.json`) or as
-  in-code `server.stubFor(...)` calls in `WireMockRegelOul.start()`. Pick the
-  in-code approach: keeps everything in Java, no separate JSON to sync with
-  the `Handlaggning` model shape.
+  handläggning GET/PUT stubs and OUL stubs are implemented as JSON mapping
+  files under `src/test/resources/mappings/` (`post-uppgifter.json`,
+  `post-uppgifter-end.json`, `get-handlaggning.json`, `put-handlaggning.json`).
+  `WireMockRegelOul` no longer contains any inline `stubFor` calls — it only
+  overrides `wiremockMapping()` to inject the `oul.api.base-url` config key.
 
 For error-path tests, override individual stubs per-test via
 `WireMockRegelOul.getWireMockServer().stubFor(...)` at `atPriority(1)` (matches
@@ -448,10 +447,9 @@ Test methods:
 Covers FROUL-PR-01.1, FROUL-PR-01.2, FROUL-PR-01.4, FROUL-NFR-01.1.
 
 - `PersistenceStartupTest`:
-  - `flyway_should_create_three_prefixed_tables` — FROUL-PR-01.1: query
+  - `flyway_should_create_three_prefixed_tables` — FROUL-PR-01.1/PR-01.2: query
     `information_schema.tables` in `regel_oul_test` schema, assert the three
-    `regel_oul_test_*` tables exist.
-  - `boot_should_apply_migrations_via_flyway` — FROUL-PR-01.4: implicit —
+    `regel_oul_test_*` tables exist. Also implicitly covers FROUL-PR-01.4 —
     if the tables exist after boot, Flyway ran.
 - `OptimisticLockingTest` — FROUL-NFR-01.1:
   - `concurrent_writes_to_same_regel_common_data_should_reject_stale_write`
@@ -478,23 +476,23 @@ they overlap.
   implicitly: the prefix asserted is the test-config value
   (`regel.persistence.table-prefix=regel_oul_test`), demonstrating the
   prefix is configuration-driven.
-- `boot_should_apply_migrations_via_flyway` asserts the `V001` row in
-  `flyway_schema_history` with `success = true` (stronger than the
-  "tables exist ⇒ Flyway ran" shortcut sketched in the plan).
+- `boot_should_apply_migrations_via_flyway` was **removed** as tautological:
+  if `@QuarkusTest` starts at all, Flyway has already run; the table existence
+  assertion in `flyway_should_create_three_prefixed_tables` already proves this.
 - Concurrency is simulated single-threaded using three sequential
   `QuarkusTransaction.requiringNew()` blocks (seed → load+detach →
   writer B commits → stale merge). Avoids threading in the test while
   still exercising the `@Version` check on the DB round-trip.
 
-### 9. Final verification
+### 9. Final verification ✅
 
-- `mvn spotless:apply && mvn test`.
-- `mvn install -DskipTests` (verify the test-jar publishes).
-- Read `krav.md` end-to-end and check each requirement ID has a corresponding
-  `@DisplayName` in a test.
-- Update `README.md` with a "How to consume" section (bean names to inject,
-  required config keys, migration ordering caveat if consumer adds its own
-  migrations).
+- `mvn spotless:apply && mvn test` — all 24 tests green locally and in CI.
+- `README.md` updated with usage example (`ImmutableOulUppgiftSpec.builder()`),
+  configuration reference table (all 4 required consumer-supplied keys), and
+  persistence table overview.
+- `krav.md` cross-checked: every FROUL-FR-*, FROUL-PR-*, and FROUL-NFR-*
+  requirement ID has at least one `@DisplayName` referencing it across the
+  test suite.
 
 ---
 
