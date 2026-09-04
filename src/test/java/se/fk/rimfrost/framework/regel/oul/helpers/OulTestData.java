@@ -2,6 +2,7 @@ package se.fk.rimfrost.framework.regel.oul.helpers;
 
 import static org.mockito.Mockito.mock;
 import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.UUID;
 import se.fk.rimfrost.framework.handlaggning.model.Handlaggning;
@@ -170,7 +171,7 @@ public final class OulTestData
                   .replyTopic(DEFAULT_REPLY_TOPIC)
                   .cloudeventAttributes(attributes)
                   .build())
-            .planeradTill(OffsetDateTime.now().plusDays(1))
+            .planeradTill(OffsetDateTime.now().plusDays(1).truncatedTo(ChronoUnit.MICROS))
             .build();
    }
 }
