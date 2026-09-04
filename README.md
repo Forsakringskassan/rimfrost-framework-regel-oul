@@ -9,7 +9,6 @@ Baseras på [rimfrost-framework-regel](https://github.com/Forsakringskassan/rimf
 och konsumeras av regelramverk som behöver OUL-uppgifter, till exempel
 `rimfrost-framework-regel-manuell` och `rimfrost-framework-regel-komplettering`.
 
-> Ramverket är under initial extraktion från `rimfrost-framework-regel-manuell`.
 > Se [`docs/krav.md`](docs/krav.md) för fullständig kravdefinition.
 
 ## Aktörer
@@ -30,6 +29,45 @@ och konsumeras av regelramverk som behöver OUL-uppgifter, till exempel
   och `RegelCommonData` per handläggning så att regelkörningen kan avslutas långt efter
   att den startades.
 
+## Användning
+
+Inject `OulUppgiftService` och anropa `createOulUppgift` med en instans av `OulUppgiftSpec`:
+
+```java
+@Inject
+OulUppgiftService oulUppgiftService;
+
+OperativUppgift uppgift = oulUppgiftService.createOulUppgift(
+    ImmutableOulUppgiftSpec.builder()
+        .handlaggningId(handlaggningId)
+        .handlaggning(handlaggning)
+        .replyTo(replyTo)
+        .cloudEventData(cloudEventData)
+        .cloudEventAttributes(cloudEventAttributes)
+        .regel("min-regel")
+        .beskrivning("Beskriving av uppgiften")
+        .verksamhetslogik("min-verksamhet")
+        .roll("handlaggare")
+        .url("/min-regel/uppgift")
+        .erbjudande(erbjudande)
+        .aktivitetId(aktivitetId)
+        .uppgiftSpecifikationId(uppgiftSpecifikationId)
+        .uppgiftSpecifikationVersion(1)
+        .build());
+```
+
+OUL-statusnotifieringar hanteras automatiskt av ramverket via `OulHandlerInterface` —
+konsumenten behöver inte implementera något för status callbacks.
+
+## Konfiguration
+
+| Egenskap                          | Beskrivning                                                                  |
+|-----------------------------------|------------------------------------------------------------------------------|
+| `regel.persistence.table-prefix`  | Unikt prefix för ramverkets databastabeller, t.ex. `rtf_manuell`             |
+| `kafka.subtopic`                  | Reply-subtopic som OUL använder för att skicka statusnotifieringar tillbaka  |
+| `quarkus.datasource.jdbc.url`     | JDBC-URL till databasen (PostgreSQL)                                         |
+| `quarkus.flyway.default-schema`   | Databasschema som Flyway migrerar och som ramverkets tabeller skapas i       |
+
 ## Persistens
 
 Ramverket skapar tre tabeller per regelimplementation:
@@ -37,8 +75,8 @@ Ramverket skapar tre tabeller per regelimplementation:
 | Tabell                          | Innehåll                                                    |
 |---------------------------------|-------------------------------------------------------------|
 | `{prefix}_common_data`          | OUL-uppgifts-ID och tillhörande uppgiftsmetadata            |
-| `{prefix}_cloud_event_data`     | CloudEvent-attribut och `replyTo` för korrelation vid avslut |
-| `{prefix}_process_topic_info`   | Routing till reply-subtopic för OUL-statusnotifieringar     |
+| `{prefix}_cloud_event_data`     | CloudEvent-attribut från regelförfrågan för korrelation vid avslut |
+| `{prefix}_process_topic_info`   | `replyTo` och routing till reply-subtopic för OUL-statusnotifieringar |
 
 Prefixet konfigureras via `regel.persistence.table-prefix` och måste vara unikt per
 regelimplementation. Migrationer hanteras av Flyway.
