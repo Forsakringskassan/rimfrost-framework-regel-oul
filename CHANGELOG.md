@@ -2,6 +2,12 @@
 
 Changelog of rimfrost-framework-regel-oul.
 
+## 0.0.2 (2026-09-07)
+
+### Bug Fixes
+
+-  Add endOulUppgift propagating OulException (FROUL-FR-01.10) ([64f7a](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/64f7a6ac9fa47a6) Ulf Slunga)  
+
 ## 0.0.1 (2026-09-04)
 
 ### Features
