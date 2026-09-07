@@ -22,7 +22,8 @@ och konsumeras av regelramverk som behöver OUL-uppgifter, till exempel
 ## Ansvarsområden
 
 - **OUL-uppgiftshantering** — skapar och avslutar OUL-uppgifter (`createOperativUppgift`,
-  `tryEndOperativUppgift`) och synkroniserar uppgiftsdata till handläggningstjänsten.
+  `tryEndOperativUppgift`, `endOperativUppgift`) och synkroniserar uppgiftsdata till
+  handläggningstjänsten.
 - **Statusnotifieringar** — prenumererar på OUL:s statusuppdateringar via Kafka och
   synkroniserar aktuell uppgiftsstatus till handläggningstjänsten.
 - **Korrelationslagring** — persisterar CloudEvent-attribut, `replyTo`, `ProcessTopicInfo`

@@ -147,7 +147,12 @@ public class OulUppgiftService implements OulHandlerInterface
    }
 
    /**
-    * Best-effort ends an OUL uppgift. Logs on failure; never throws.
+    * Best-effort ends an OUL uppgift. Logs on failure; never throws
+    * (FROUL-FR-01.9). Intended for internal orphan-cleanup and error paths
+    * where propagating an end-failure would mask the original cause.
+    *
+    * <p>For consumer flows that need to react to end-failures, use
+    * {@link #endOulUppgift(UUID, String)} instead.
     *
     * @param uppgiftId OUL uppgift id
     * @param reason    human-readable reason recorded on the OUL uppgift
@@ -162,6 +167,20 @@ public class OulUppgiftService implements OulHandlerInterface
       {
          LOGGER.error("Could not end operativ uppgift with id {}", uppgiftId, e);
       }
+   }
+
+   /**
+    * Ends an OUL uppgift with the given reason (FROUL-FR-01.10). Unlike
+    * {@link #tryEndOulUppgift(UUID, String)}, failures are propagated to the
+    * caller so consumers can react (retry, error response, cancel run, ...).
+    *
+    * @param uppgiftId OUL uppgift id
+    * @param reason    human-readable reason recorded on the OUL uppgift
+    * @throws OulException if OUL rejects the end request or is unreachable
+    */
+   public void endOulUppgift(UUID uppgiftId, String reason) throws OulException
+   {
+      oulAdapter.endOperativUppgift(uppgiftId, reason);
    }
 
    /**
