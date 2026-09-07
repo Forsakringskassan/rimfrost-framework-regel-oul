@@ -2,6 +2,7 @@ package se.fk.rimfrost.framework.regel.oul.logic;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -84,6 +85,19 @@ class OulUppgiftServiceEndAndCleanupTest extends OulUppgiftServiceTestBase
 
       assertThatCode(() -> oulUppgiftService.tryEndOulUppgift(uppgiftId, END_REASON))
             .doesNotThrowAnyException();
+      verify(oulAdapter).endOperativUppgift(eq(uppgiftId), eq(END_REASON));
+   }
+
+   @Test
+   @DisplayName("FROUL-FR-01.10: endOulUppgift kastar OulException vidare vid fel")
+   void endOulUppgift_should_propagate_OulException() throws OulException
+   {
+      UUID uppgiftId = UUID.randomUUID();
+      OulException failure = new OulException(OulException.ErrorType.UNEXPECTED_ERROR, "boom");
+      doThrow(failure).when(oulAdapter).endOperativUppgift(any(), any());
+
+      assertThatThrownBy(() -> oulUppgiftService.endOulUppgift(uppgiftId, END_REASON))
+            .isSameAs(failure);
       verify(oulAdapter).endOperativUppgift(eq(uppgiftId), eq(END_REASON));
    }
 

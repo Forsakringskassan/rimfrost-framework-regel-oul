@@ -28,7 +28,11 @@ underliggande ramverk upprepas inte.
 - **FROUL-FR-01.8** Ramverket ska inte inkludera individer i OUL-skapandeförfrågan. OUL hämtar
   individinformation internt vid behov via det `handlaggningId` som uppgiften är knuten till.
 - **FROUL-FR-01.9** Ramverket ska tillhandahålla en operation för att avsluta en OUL-uppgift
-  (`tryEndOperativUppgift`) med angiven orsak.
+  (`tryEndOperativUppgift`) med angiven orsak. Operationen ska vara best-effort — fel vid
+  avslutning ska loggas men inte kastas vidare.
+- **FROUL-FR-01.10** Ramverket ska tillhandahålla en operation för att avsluta en OUL-uppgift
+  (`endOperativUppgift`) med angiven orsak. Till skillnad från `tryEndOperativUppgift` ska fel
+  vid avslutning kastas vidare som exception, så att anroparen kan hantera felet.
 
 ### FROUL-FR-02 — Hantering av OUL-statusnotifieringar
 
