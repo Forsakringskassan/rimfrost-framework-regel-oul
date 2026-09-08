@@ -34,7 +34,7 @@ import se.fk.rimfrost.framework.regel.integration.kafka.RegelKafkaProducer;
 import se.fk.rimfrost.framework.regel.integration.kafka.dto.ImmutableRegelResponse;
 import se.fk.rimfrost.framework.regel.integration.kafka.dto.RegelResponse;
 import se.fk.rimfrost.framework.regel.logic.RegelCancelledException;
-import se.fk.rimfrost.framework.regel.oul.logic.entity.CloudEventData;
+import se.fk.rimfrost.framework.regel.logic.entity.CloudEventData;
 import se.fk.rimfrost.framework.regel.oul.logic.entity.ImmutableOulCorrelationData;
 import se.fk.rimfrost.framework.regel.oul.logic.entity.OulCorrelationData;
 import se.fk.rimfrost.framework.regel.oul.logic.entity.OulUppgiftSpec;
@@ -338,8 +338,7 @@ public class OulUppgiftService implements OulHandlerInterface
             .build();
    }
 
-   private void writeCloudEventData(UUID handlaggningId,
-         se.fk.rimfrost.framework.regel.oul.logic.entity.CloudEventData cloudEventData)
+   private void writeCloudEventData(UUID handlaggningId, CloudEventData cloudEventData)
    {
       try
       {
@@ -478,7 +477,7 @@ public class OulUppgiftService implements OulHandlerInterface
    }
 
    private Handlaggning getHandlaggning(UUID handlaggningId,
-         se.fk.rimfrost.framework.regel.oul.logic.entity.CloudEventData cloudEventData)
+         CloudEventData cloudEventData)
    {
       try
       {
@@ -496,7 +495,7 @@ public class OulUppgiftService implements OulHandlerInterface
    }
 
    private void updateHandlaggning(HandlaggningUpdate handlaggningUpdate,
-         se.fk.rimfrost.framework.regel.oul.logic.entity.CloudEventData cloudEventData)
+         CloudEventData cloudEventData)
    {
       try
       {

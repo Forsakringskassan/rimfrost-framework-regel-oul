@@ -1,12 +1,12 @@
 package se.fk.rimfrost.framework.regel.oul.storage.internal;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import se.fk.rimfrost.framework.regel.oul.logic.entity.CloudEventData;
-import se.fk.rimfrost.framework.regel.oul.logic.entity.ImmutableCloudEventData;
+import se.fk.rimfrost.framework.regel.logic.entity.CloudEventData;
+import se.fk.rimfrost.framework.regel.logic.entity.ImmutableCloudEventData;
 import java.util.UUID;
 
 /**
- * Maps between {@link se.fk.rimfrost.framework.regel.oul.logic.entity.CloudEventData}
+ * Maps between {@link se.fk.rimfrost.framework.regel.logic.entity.CloudEventData}
  * and {@link CloudEventDataEntity}.
  */
 @ApplicationScoped

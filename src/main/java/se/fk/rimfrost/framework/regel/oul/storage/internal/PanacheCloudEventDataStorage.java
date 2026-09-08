@@ -3,7 +3,7 @@ package se.fk.rimfrost.framework.regel.oul.storage.internal;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import se.fk.rimfrost.framework.regel.oul.logic.entity.CloudEventData;
+import se.fk.rimfrost.framework.regel.logic.entity.CloudEventData;
 import se.fk.rimfrost.framework.regel.oul.storage.CloudEventDataStorage;
 import java.util.UUID;
 

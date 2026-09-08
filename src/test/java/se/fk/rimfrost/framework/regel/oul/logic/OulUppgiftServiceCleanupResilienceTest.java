@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import se.fk.rimfrost.framework.regel.oul.base.OulUppgiftServiceTestBase;
 import se.fk.rimfrost.framework.regel.oul.helpers.OulTestData;
 import se.fk.rimfrost.framework.regel.oul.helpers.WireMockRegelOul;
-import se.fk.rimfrost.framework.regel.oul.logic.entity.CloudEventData;
+import se.fk.rimfrost.framework.regel.logic.entity.CloudEventData;
 import se.fk.rimfrost.framework.regel.oul.storage.CloudEventDataStorage;
 import se.fk.rimfrost.framework.regel.oul.storage.ProcessTopicInfoStorage;
 import se.fk.rimfrost.framework.regel.oul.storage.RegelCommonDataStorage;

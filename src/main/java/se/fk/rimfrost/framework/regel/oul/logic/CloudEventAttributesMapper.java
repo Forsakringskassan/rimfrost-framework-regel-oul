@@ -2,8 +2,8 @@ package se.fk.rimfrost.framework.regel.oul.logic;
 
 import java.util.Map;
 import java.util.UUID;
-import se.fk.rimfrost.framework.regel.oul.logic.entity.CloudEventData;
-import se.fk.rimfrost.framework.regel.oul.logic.entity.ImmutableCloudEventData;
+import se.fk.rimfrost.framework.regel.logic.entity.CloudEventData;
+import se.fk.rimfrost.framework.regel.logic.entity.ImmutableCloudEventData;
 
 /**
  * Maps between the typed {@link CloudEventData} used for correlation storage
