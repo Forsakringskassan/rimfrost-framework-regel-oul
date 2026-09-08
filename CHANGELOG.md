@@ -2,6 +2,13 @@
 
 Changelog of rimfrost-framework-regel-oul.
 
+## 0.0.3 (2026-09-08)
+
+### Bug Fixes
+
+-  Truncate skapadTs to micros in seedUppgift to match PostgreSQL precision ([1d0a2](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/1d0a284b71c508e) Ulf Slunga)  
+-  Add OulCorrelationData and getCorrelationData (FROUL-FR-01.11) ([c7ab8](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/c7ab85693815986) Ulf Slunga)  
+
 ## 0.0.2 (2026-09-07)
 
 ### Bug Fixes
