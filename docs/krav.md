@@ -33,6 +33,9 @@ underliggande ramverk upprepas inte.
 - **FROUL-FR-01.10** Ramverket ska tillhandahålla en operation för att avsluta en OUL-uppgift
   (`endOperativUppgift`) med angiven orsak. Till skillnad från `tryEndOperativUppgift` ska fel
   vid avslutning kastas vidare som exception, så att anroparen kan hantera felet.
+- **FROUL-FR-01.11** Ramverket ska tillhandahålla en operation (`getCorrelationData`) för att
+  läsa samtliga lagrade korrelationsdata för en given handläggning som ett samlat värde.
+  Operationen returnerar `null` om någon av de tre korrelationsraderna saknas.
 
 ### FROUL-FR-02 — Hantering av OUL-statusnotifieringar
 
