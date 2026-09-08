@@ -132,7 +132,7 @@ public final class OulTestData
             .id(UUID.randomUUID())
             .version(1)
             .aktivitetId(UUID.randomUUID())
-            .skapadTs(OffsetDateTime.now())
+            .skapadTs(OffsetDateTime.now().truncatedTo(ChronoUnit.MICROS))
             .uppgiftStatus("NY")
             .fSSAinformation("FSSAinformation.HANDLAGGNING_PAGAR")
             .uppgiftSpecifikation(ImmutableUppgiftSpecifikation.builder()
