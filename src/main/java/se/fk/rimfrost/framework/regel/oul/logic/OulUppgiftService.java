@@ -35,6 +35,8 @@ import se.fk.rimfrost.framework.regel.integration.kafka.dto.ImmutableRegelRespon
 import se.fk.rimfrost.framework.regel.integration.kafka.dto.RegelResponse;
 import se.fk.rimfrost.framework.regel.logic.RegelCancelledException;
 import se.fk.rimfrost.framework.regel.oul.logic.entity.CloudEventData;
+import se.fk.rimfrost.framework.regel.oul.logic.entity.ImmutableOulCorrelationData;
+import se.fk.rimfrost.framework.regel.oul.logic.entity.OulCorrelationData;
 import se.fk.rimfrost.framework.regel.oul.logic.entity.OulUppgiftSpec;
 import se.fk.rimfrost.framework.regel.oul.storage.CloudEventDataStorage;
 import se.fk.rimfrost.framework.regel.oul.storage.ProcessTopicInfoStorage;
@@ -181,6 +183,31 @@ public class OulUppgiftService implements OulHandlerInterface
    public void endOulUppgift(UUID uppgiftId, String reason) throws OulException
    {
       oulAdapter.endOperativUppgift(uppgiftId, reason);
+   }
+
+   /**
+    * Returns the correlation data written by {@link #createOulUppgift} for the
+    * given handläggning, bundling the three persistent correlation rows into a
+    * single value. Returns {@code null} if any of the three rows is missing.
+    *
+    * @param handlaggningId the handläggning UUID
+    * @return the correlation data, or {@code null} if not found
+    */
+   public OulCorrelationData getCorrelationData(UUID handlaggningId)
+   {
+      var commonData = regelCommonDataStorage.getRegelCommonData(handlaggningId);
+      var processInfo = processTopicInfoStorage.getProcessTopicInfo(handlaggningId);
+      var cloudEventData = cloudEventDataStorage.getCloudEventData(handlaggningId);
+      if (commonData == null || processInfo == null || cloudEventData == null)
+      {
+         return null;
+      }
+      return ImmutableOulCorrelationData.builder()
+            .oulUppgiftId(commonData.oulUppgiftId())
+            .uppgift(commonData.uppgift())
+            .replyTopic(processInfo.replyTopic())
+            .cloudEventData(cloudEventData)
+            .build();
    }
 
    /**
