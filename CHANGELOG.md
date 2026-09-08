@@ -2,6 +2,12 @@
 
 Changelog of rimfrost-framework-regel-oul.
 
+## 0.0.4 (2026-09-08)
+
+### Bug Fixes
+
+-  Remove duplicate CloudEventData, use rimfrost-framework-regel type ([4e8d6](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/4e8d60cb78d29d7) Ulf Slunga)  
+
 ## 0.0.3 (2026-09-08)
 
 ### Bug Fixes
