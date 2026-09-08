@@ -24,7 +24,7 @@ import se.fk.rimfrost.framework.oul.logic.dto.OulStatus;
 import se.fk.rimfrost.framework.regel.oul.base.OulUppgiftServiceTestBase;
 import se.fk.rimfrost.framework.regel.oul.helpers.OulTestData;
 import se.fk.rimfrost.framework.regel.oul.helpers.WireMockRegelOul;
-import se.fk.rimfrost.framework.regel.oul.logic.entity.CloudEventData;
+import se.fk.rimfrost.framework.regel.logic.entity.CloudEventData;
 import se.fk.rimfrost.framework.regel.oul.storage.RegelCommonDataStorage;
 import se.fk.rimfrost.framework.regel.oul.storage.entity.ImmutableRegelCommonData;
 import se.fk.rimfrost.framework.regel.oul.storage.entity.RegelCommonData;

@@ -18,10 +18,10 @@ import se.fk.rimfrost.framework.oul.logic.dto.OulStatus;
 import se.fk.rimfrost.framework.oul.model.Erbjudande;
 import se.fk.rimfrost.framework.oul.model.ImmutableErbjudande;
 import se.fk.rimfrost.framework.regel.oul.logic.CloudEventAttributesMapper;
-import se.fk.rimfrost.framework.regel.oul.logic.entity.CloudEventData;
+import se.fk.rimfrost.framework.regel.logic.entity.CloudEventData;
 import se.fk.rimfrost.framework.regel.oul.logic.entity.ImmutableOulUppgiftSpec;
 import se.fk.rimfrost.framework.regel.oul.logic.entity.OulUppgiftSpec;
-import se.fk.rimfrost.framework.regel.oul.logic.entity.ImmutableCloudEventData;
+import se.fk.rimfrost.framework.regel.logic.entity.ImmutableCloudEventData;
 
 /**
  * Factory methods for building test fixtures used by regel-oul unit and

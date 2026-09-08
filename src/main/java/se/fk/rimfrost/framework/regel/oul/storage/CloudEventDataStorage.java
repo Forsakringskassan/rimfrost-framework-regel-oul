@@ -1,6 +1,6 @@
 package se.fk.rimfrost.framework.regel.oul.storage;
 
-import se.fk.rimfrost.framework.regel.oul.logic.entity.CloudEventData;
+import se.fk.rimfrost.framework.regel.logic.entity.CloudEventData;
 import java.util.UUID;
 
 /**

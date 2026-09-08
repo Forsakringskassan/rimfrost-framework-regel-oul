@@ -3,6 +3,7 @@ package se.fk.rimfrost.framework.regel.oul.logic.entity;
 import java.util.UUID;
 import org.immutables.value.Value;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgift;
+import se.fk.rimfrost.framework.regel.logic.entity.CloudEventData;
 
 /**
  * Bundles the three persistent correlation rows written by
