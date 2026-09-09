@@ -36,6 +36,13 @@ underliggande ramverk upprepas inte.
 - **FROUL-FR-01.11** Ramverket ska tillhandahålla en operation (`getCorrelationData`) för att
   läsa samtliga lagrade korrelationsdata för en given handläggning som ett samlat värde.
   Operationen returnerar `null` om någon av de tre korrelationsraderna saknas.
+- **FROUL-FR-01.12** Ramverket ska tillhandahålla en operation för att ta bort
+  tilldelningen av en OUL-uppgift (`tryUnassignOperativUppgift`). Operationen ska vara
+  best-effort — fel vid avplockning ska loggas men inte kastas vidare.
+- **FROUL-FR-01.13** Ramverket ska tillhandahålla en operation för att ta bort
+  tilldelningen av en OUL-uppgift (`unassignOperativUppgift`). Till skillnad från
+  `tryUnassignOperativUppgift` ska fel kastas vidare som exception, så att anroparen
+  kan hantera felet.
 
 ### FROUL-FR-02 — Hantering av OUL-statusnotifieringar
 

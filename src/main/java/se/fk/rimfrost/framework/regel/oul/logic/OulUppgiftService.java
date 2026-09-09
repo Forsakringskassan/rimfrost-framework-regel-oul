@@ -186,6 +186,41 @@ public class OulUppgiftService implements OulHandlerInterface
    }
 
    /**
+    * Best-effort removes the assignee from an OUL uppgift (FROUL-FR-01.12). Logs on
+    * failure; never throws. Intended for error paths where propagating an unassign
+    * failure would mask the original cause.
+    *
+    * <p>For consumer flows that need to react to unassign failures, use
+    * {@link #unassignOulUppgift(UUID)} instead.
+    *
+    * @param uppgiftId OUL uppgift id
+    */
+   public void tryUnassignOulUppgift(UUID uppgiftId)
+   {
+      try
+      {
+         oulAdapter.unassignOperativUppgift(uppgiftId);
+      }
+      catch (OulException e)
+      {
+         LOGGER.error("Could not unassign operativ uppgift with id {}", uppgiftId, e);
+      }
+   }
+
+   /**
+    * Removes the assignee from an OUL uppgift (FROUL-FR-01.13). Unlike
+    * {@link #tryUnassignOulUppgift(UUID)}, failures are propagated to the caller so
+    * consumers can react (retry, error response, cancel run, ...).
+    *
+    * @param uppgiftId OUL uppgift id
+    * @throws OulException if OUL rejects the unassign request or is unreachable
+    */
+   public void unassignOulUppgift(UUID uppgiftId) throws OulException
+   {
+      oulAdapter.unassignOperativUppgift(uppgiftId);
+   }
+
+   /**
     * Returns the correlation data written by {@link #createOulUppgift} for the
     * given handläggning, bundling the three persistent correlation rows into a
     * single value. Returns {@code null} if any of the three rows is missing.
