@@ -2,6 +2,12 @@
 
 Changelog of rimfrost-framework-regel-oul.
 
+## 0.0.5 (2026-09-09)
+
+### Bug Fixes
+
+-  Add tryUnassignOulUppgift and unassignOulUppgift wrappers ([8dadd](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/8dadd9fbbc8f4e8) Ulf Slunga)  
+
 ## 0.0.4 (2026-09-08)
 
 ### Bug Fixes
