@@ -73,6 +73,11 @@
       <version>1.1.1</version>
     </dependency>
     <dependency>
+      <groupId>se.fk.rimfrost.framework.regel.oul</groupId>
+      <artifactId>rimfrost-framework-regel-oul-asyncapi</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+    <dependency>
       <groupId>se.fk.rimfrost.framework.regel</groupId>
       <artifactId>rimfrost-framework-regel</artifactId>
       <version>1.4.2</version>
