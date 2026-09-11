@@ -77,12 +77,12 @@ underliggande ramverk upprepas inte.
 
 ### FROUL-PR-01 — Tabeller och namngivning
 
-- **FROUL-PR-01.1** Ramverket ska skapa tre tabeller i databasen med konfigurerbart prefix:
+- **FROUL-PR-01.1** Ramverket kräver tre tabeller i databasen med konfigurerbart prefix:
   `{prefix}_common_data`, `{prefix}_cloud_event_data` och `{prefix}_process_topic_info`.
+  Tabellerna skapas av den konsumerande tjänsten via dess egna Flyway-migrationer.
 - **FROUL-PR-01.2** Tabellprefixet ska vara konfigurerbart och unikt per regelimplementation
   för att möjliggöra deployment av flera regler i samma databas.
 - **FROUL-PR-01.3** Ramverket ska rejecta uppstart om tabellprefixet inte är konfigurerat.
-- **FROUL-PR-01.4** Databasmigrationer ska hanteras via Flyway och köras automatiskt vid uppstart.
 
 ---
 
