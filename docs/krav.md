@@ -71,6 +71,30 @@ underliggande ramverk upprepas inte.
 - **FROUL-FR-03.6** Rensningsoperationerna ska genomföras med bästa möjliga ansträngning —
   fel i enskilda rensningar ska inte hindra övriga rensningar.
 
+### FROUL-FR-04 — Hantering av cancelled-event via Kafka
+
+- **FROUL-FR-04.1** Ramverket ska prenumerera på ett dedikerat Kafka-topic för cancelled-event
+  (t.ex. BPMN-timeout), konfigurerat via `kafka.cancelled.topic`. Varje meddelande behandlas som
+  att det berörda regelflödet inte kommer att slutföras normalt.
+- **FROUL-FR-04.2** Cancelled-event ska följa det befintliga CloudEvent-envelope och innehålla
+  de CloudEvent-attribut som krävs för att identifiera den berörda regelinstansen via lagrad
+  korrelationsdata.
+- **FROUL-FR-04.3** Vid mottagning av en cancelled-event ska ramverket, om ett uppgifts-ID finns
+  i lagrad korrelationsdata, försöka avsluta den tillhörande OUL-uppgiften med en angiven
+  orsak. Operationen ska vara best-effort — fel ska loggas men inte hindra efterföljande
+  städning.
+- **FROUL-FR-04.4** Vid mottagning av en cancelled-event ska ramverket rensa samtliga lagrade
+  korrelationsdata, processroutingdata och uppgiftsmetadata för den berörda regelinstansen,
+  analogt med FROUL-FR-03.5.
+- **FROUL-FR-04.5** Ramverket ska tillhandahålla ett gränssnitt (`RegelOulCancelledHandler`) som
+  regelimplementationer kan implementera för att utföra regelspecifik städning. Ramverket ska
+  anropa detta gränssnitt före sin inbyggda städning (FR-04.3–04.4).
+- **FROUL-FR-04.6** Fel i den regelspecifika städningen (FR-04.5) ska vara best-effort — de
+  ska loggas men inte hindra den inbyggda städningen från att köras.
+- **FROUL-FR-04.7** Om en cancelled-event tas emot för en handläggning utan lagrad
+  korrelationsdata ska ramverket ignorera eventet utan att skicka felmeddelande, analogt med
+  FROUL-FR-02.5.
+
 ---
 
 ## 2. Persistenskrav
