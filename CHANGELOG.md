@@ -2,6 +2,20 @@
 
 Changelog of rimfrost-framework-regel-oul.
 
+## 0.1.0 (2026-09-14)
+
+### Features
+
+-  Add cancelled-event cleanup (FROUL-FR-04) ([26210](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/262107eaa13568e) Ulf Slunga)  
+
+### Bug Fixes
+
+-  Encapsulate OUL adapter types within OUL framework ([6549d](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/6549db208f357f6) Lars Persson)  
+-  Remove bundled DB migrations — table creation delegated to consumers ([897aa](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/897aa966b780452) Ulf Slunga)  
+
+### Dependency updates
+
+- add renovate.json ([42e4c](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/42e4cc668b11954) renovate[bot])  
 ## 0.0.5 (2026-09-09)
 
 ### Bug Fixes
