@@ -2,6 +2,8 @@ package se.fk.rimfrost.framework.regel.oul.logic;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -17,6 +19,7 @@ import se.fk.rimfrost.framework.oul.adapter.OulAdapter;
 import se.fk.rimfrost.framework.oul.exception.OulException;
 import se.fk.rimfrost.framework.regel.oul.base.OulUppgiftServiceTestBase;
 import se.fk.rimfrost.framework.regel.oul.helpers.WireMockRegelOul;
+import se.fk.rimfrost.framework.regel.oul.logic.exception.OulServiceException;
 
 /**
  * Tests for {@link OulUppgiftService#tryUnassignOulUppgift(UUID)} and
@@ -60,7 +63,7 @@ class OulUppgiftServiceUnassignTest extends OulUppgiftServiceTestBase
 
    @Test
    @DisplayName("FROUL-FR-01.13: unassignOulUppgift anropar OUL unassignOperativUppgift")
-   void unassignOulUppgift_should_call_oul_unassignOperativUppgift() throws OulException
+   void unassignOulUppgift_should_call_oul_unassignOperativUppgift() throws OulException, OulServiceException
    {
       UUID uppgiftId = UUID.randomUUID();
 
@@ -70,15 +73,18 @@ class OulUppgiftServiceUnassignTest extends OulUppgiftServiceTestBase
    }
 
    @Test
-   @DisplayName("FROUL-FR-01.13: unassignOulUppgift kastar OulException vidare vid fel")
-   void unassignOulUppgift_should_propagate_OulException() throws OulException
+   @DisplayName("FROUL-FR-01.13: unassignOulUppgift kastar OulServiceException vid fel")
+   void unassignOulUppgift_should_throw_OulServiceException() throws OulException
    {
       UUID uppgiftId = UUID.randomUUID();
       OulException failure = new OulException(OulException.ErrorType.UNEXPECTED_ERROR, "boom");
       doThrow(failure).when(oulAdapter).unassignOperativUppgift(any());
 
-      assertThatThrownBy(() -> oulUppgiftService.unassignOulUppgift(uppgiftId))
-            .isSameAs(failure);
+      var exception = assertThrows(OulServiceException.class, () -> oulUppgiftService.unassignOulUppgift(uppgiftId));
+      assertEquals(OulServiceException.ErrorType.UNEXPECTED_ERROR, exception.getErrorType());
+      assertEquals(failure.getMessage(), exception.getMessage());
+      assertEquals(failure, exception.getCause());
+
       verify(oulAdapter).unassignOperativUppgift(eq(uppgiftId));
    }
 }

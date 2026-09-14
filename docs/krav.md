@@ -43,6 +43,8 @@ underliggande ramverk upprepas inte.
   tilldelningen av en OUL-uppgift (`unassignOperativUppgift`). Till skillnad från
   `tryUnassignOperativUppgift` ska fel kastas vidare som exception, så att anroparen
   kan hantera felet.
+- **FROUL-FR-01.14** Fel som uppstår vid skapande av ny uppgift via OUL-tjänsten (`createOperativUppgift`) ska kastas 
+  vidare som exception så att den som anropat OUL-tjänsten kan hantera felet.
 
 ### FROUL-FR-02 — Hantering av OUL-statusnotifieringar
 
