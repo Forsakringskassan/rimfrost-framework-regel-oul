@@ -3,6 +3,13 @@ package se.fk.rimfrost.framework.regel.oul.logic;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
@@ -15,12 +22,14 @@ import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import se.fk.rimfrost.framework.handlaggning.model.Handlaggning;
+import se.fk.rimfrost.framework.oul.exception.OulException;
 import se.fk.rimfrost.framework.oul.model.OperativUppgift;
 import se.fk.rimfrost.framework.regel.oul.base.OulUppgiftServiceTestBase;
 import se.fk.rimfrost.framework.regel.oul.helpers.OulTestData;
 import se.fk.rimfrost.framework.regel.oul.helpers.WireMockRegelOul;
 import se.fk.rimfrost.framework.regel.logic.entity.CloudEventData;
 import se.fk.rimfrost.framework.regel.oul.logic.entity.OulUppgiftSpec;
+import se.fk.rimfrost.framework.regel.oul.logic.exception.OulServiceException;
 import se.fk.rimfrost.framework.regel.oul.storage.CloudEventDataStorage;
 import se.fk.rimfrost.framework.regel.oul.storage.ProcessTopicInfoStorage;
 import se.fk.rimfrost.framework.regel.oul.storage.RegelCommonDataStorage;
@@ -61,14 +70,13 @@ class OulUppgiftServiceCreateTest extends OulUppgiftServiceTestBase
     *
     * @param handlaggningId the id to use for the handläggning and OUL uppgift
     * @param cloudEventData the cloud event metadata to attach to the spec
-    * @return the {@link OperativUppgift} returned by the service
     * @throws Exception if the OUL adapter throws
     */
-   private OperativUppgift createDefault(UUID handlaggningId, CloudEventData cloudEventData) throws Exception
+   private void createDefault(UUID handlaggningId, CloudEventData cloudEventData) throws Exception
    {
       Handlaggning handlaggning = OulTestData.handlaggning(handlaggningId, 1);
       OulUppgiftSpec spec = OulTestData.oulUppgiftSpec(handlaggning, cloudEventData);
-      return oulUppgiftService.createOulUppgift(spec);
+      oulUppgiftService.createOulUppgift(spec);
    }
 
    /**
@@ -88,9 +96,8 @@ class OulUppgiftServiceCreateTest extends OulUppgiftServiceTestBase
    void createOulUppgift_should_post_to_oul_uppgifter() throws Exception
    {
       UUID handlaggningId = UUID.randomUUID();
-      OperativUppgift result = createDefault(handlaggningId, OulTestData.cloudEventData());
+      createDefault(handlaggningId, OulTestData.cloudEventData());
 
-      assertThat(result.getUppgiftId()).isEqualTo(UUID.fromString(WireMockRegelOul.DEFAULT_UPPGIFT_ID));
       List<LoggedRequest> requests = WireMockRegelOul.getWireMockServer()
             .findAll(postRequestedFor(urlPathEqualTo("/uppgifter")));
       assertThat(requests).hasSize(1);

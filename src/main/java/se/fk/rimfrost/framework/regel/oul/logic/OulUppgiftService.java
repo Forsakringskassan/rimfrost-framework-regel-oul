@@ -35,9 +35,11 @@ import se.fk.rimfrost.framework.regel.integration.kafka.dto.ImmutableRegelRespon
 import se.fk.rimfrost.framework.regel.integration.kafka.dto.RegelResponse;
 import se.fk.rimfrost.framework.regel.logic.RegelCancelledException;
 import se.fk.rimfrost.framework.regel.logic.entity.CloudEventData;
+import se.fk.rimfrost.framework.regel.oul.logic.entity.Erbjudande;
 import se.fk.rimfrost.framework.regel.oul.logic.entity.ImmutableOulCorrelationData;
 import se.fk.rimfrost.framework.regel.oul.logic.entity.OulCorrelationData;
 import se.fk.rimfrost.framework.regel.oul.logic.entity.OulUppgiftSpec;
+import se.fk.rimfrost.framework.regel.oul.logic.exception.OulServiceException;
 import se.fk.rimfrost.framework.regel.oul.storage.CloudEventDataStorage;
 import se.fk.rimfrost.framework.regel.oul.storage.ProcessTopicInfoStorage;
 import se.fk.rimfrost.framework.regel.oul.storage.RegelCommonDataStorage;
@@ -107,14 +109,22 @@ public class OulUppgiftService implements OulHandlerInterface
     * orphaned OUL uppgift in the handläggare's inbox.
     *
     * @param spec consumer-supplied specification of the OUL uppgift to create
-    * @return the {@link OperativUppgift} returned by OUL, containing the OUL uppgift id and status
-    * @throws OulException            if OUL uppgift creation fails
+    * @throws OulServiceException     if OUL uppgift creation fails
     * @throws RegelCancelledException if handläggning update or correlation persistence fails after OUL create
     */
-   public OperativUppgift createOulUppgift(OulUppgiftSpec spec) throws OulException
+   public void createOulUppgift(OulUppgiftSpec spec) throws OulServiceException
    {
       CreateOperativUppgiftRequest oulRequest = buildOulRequest(spec);
-      OperativUppgift operativUppgift = oulAdapter.createOperativUppgift(oulRequest);
+      OperativUppgift operativUppgift = null;
+
+      try
+      {
+         operativUppgift = oulAdapter.createOperativUppgift(oulRequest);
+      }
+      catch (OulException e)
+      {
+         throw new OulServiceException(toErrorType(e.getErrorType()), e.getMessage(), e);
+      }
 
       try
       {
@@ -144,8 +154,6 @@ public class OulUppgiftService implements OulHandlerInterface
          cleanupCorrelation(spec.handlaggningId());
          throw persistEx;
       }
-
-      return operativUppgift;
    }
 
    /**
@@ -178,11 +186,18 @@ public class OulUppgiftService implements OulHandlerInterface
     *
     * @param uppgiftId OUL uppgift id
     * @param reason    human-readable reason recorded on the OUL uppgift
-    * @throws OulException if OUL rejects the end request or is unreachable
+    * @throws OulServiceException if OUL rejects the end request or is unreachable
     */
-   public void endOulUppgift(UUID uppgiftId, String reason) throws OulException
+   public void endOulUppgift(UUID uppgiftId, String reason) throws OulServiceException
    {
-      oulAdapter.endOperativUppgift(uppgiftId, reason);
+      try
+      {
+         oulAdapter.endOperativUppgift(uppgiftId, reason);
+      }
+      catch (OulException e)
+      {
+         throw new OulServiceException(toErrorType(e.getErrorType()), e.getMessage(), e);
+      }
    }
 
    /**
@@ -213,11 +228,18 @@ public class OulUppgiftService implements OulHandlerInterface
     * consumers can react (retry, error response, cancel run, ...).
     *
     * @param uppgiftId OUL uppgift id
-    * @throws OulException if OUL rejects the unassign request or is unreachable
+    * @throws OulServiceException if OUL rejects the unassign request or is unreachable
     */
-   public void unassignOulUppgift(UUID uppgiftId) throws OulException
+   public void unassignOulUppgift(UUID uppgiftId) throws OulServiceException
    {
-      oulAdapter.unassignOperativUppgift(uppgiftId);
+      try
+      {
+         oulAdapter.unassignOperativUppgift(uppgiftId);
+      }
+      catch (OulException e)
+      {
+         throw new OulServiceException(toErrorType(e.getErrorType()), e.getMessage(), e);
+      }
    }
 
    /**
@@ -344,7 +366,7 @@ public class OulUppgiftService implements OulHandlerInterface
             .roll(spec.roll())
             .url(spec.url())
             .subTopic(oulReplyToSubTopic)
-            .erbjudande(spec.erbjudande())
+            .erbjudande(toErbjudande(spec.erbjudande()))
             .processInfo(ImmutableProcessInfo.builder()
                   .replyTopic(spec.replyTo())
                   .cloudeventAttributes(spec.cloudEventAttributes())
@@ -576,5 +598,16 @@ public class OulUppgiftService implements OulHandlerInterface
       info.setFelkod(felkod);
       info.setFelmeddelande(meddelande);
       return info;
+   }
+
+   private OulServiceException.ErrorType toErrorType(OulException.ErrorType errorType)
+   {
+      return switch(errorType){case OulException.ErrorType.NOT_FOUND->OulServiceException.ErrorType.NOT_FOUND;case OulException.ErrorType.BAD_REQUEST->OulServiceException.ErrorType.BAD_REQUEST;case OulException.ErrorType.SERVICE_UNAVAILABLE->OulServiceException.ErrorType.SERVICE_UNAVAILABLE;case OulException.ErrorType.UNEXPECTED_ERROR->OulServiceException.ErrorType.UNEXPECTED_ERROR;};
+   }
+
+   private se.fk.rimfrost.framework.oul.model.Erbjudande toErbjudande(Erbjudande erbjudande)
+   {
+      return se.fk.rimfrost.framework.oul.model.ImmutableErbjudande.builder().id(erbjudande.getId()).namn(erbjudande.getNamn())
+            .build();
    }
 }

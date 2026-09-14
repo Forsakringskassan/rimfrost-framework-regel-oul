@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.UUID;
 import org.immutables.value.Value;
 import se.fk.rimfrost.framework.handlaggning.model.Handlaggning;
-import se.fk.rimfrost.framework.oul.model.Erbjudande;
 import se.fk.rimfrost.framework.regel.logic.entity.CloudEventData;
 
 /**

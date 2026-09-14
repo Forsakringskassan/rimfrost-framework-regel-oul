@@ -3,6 +3,8 @@ package se.fk.rimfrost.framework.regel.oul.logic;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -20,6 +22,7 @@ import se.fk.rimfrost.framework.regel.oul.base.OulUppgiftServiceTestBase;
 import se.fk.rimfrost.framework.regel.oul.helpers.OulTestData;
 import se.fk.rimfrost.framework.regel.oul.helpers.WireMockRegelOul;
 import se.fk.rimfrost.framework.regel.logic.entity.CloudEventData;
+import se.fk.rimfrost.framework.regel.oul.logic.exception.OulServiceException;
 import se.fk.rimfrost.framework.regel.oul.storage.CloudEventDataStorage;
 import se.fk.rimfrost.framework.regel.oul.storage.ProcessTopicInfoStorage;
 import se.fk.rimfrost.framework.regel.oul.storage.RegelCommonDataStorage;
@@ -89,15 +92,18 @@ class OulUppgiftServiceEndAndCleanupTest extends OulUppgiftServiceTestBase
    }
 
    @Test
-   @DisplayName("FROUL-FR-01.10: endOulUppgift kastar OulException vidare vid fel")
-   void endOulUppgift_should_propagate_OulException() throws OulException
+   @DisplayName("FROUL-FR-01.10: endOulUppgift kastar OulServiceException vid fel")
+   void endOulUppgift_should_throw_OulServiceException() throws OulException
    {
       UUID uppgiftId = UUID.randomUUID();
       OulException failure = new OulException(OulException.ErrorType.UNEXPECTED_ERROR, "boom");
       doThrow(failure).when(oulAdapter).endOperativUppgift(any(), any());
 
-      assertThatThrownBy(() -> oulUppgiftService.endOulUppgift(uppgiftId, END_REASON))
-            .isSameAs(failure);
+      var exception = assertThrows(OulServiceException.class, () -> oulUppgiftService.endOulUppgift(uppgiftId, END_REASON));
+      assertEquals(OulServiceException.ErrorType.UNEXPECTED_ERROR, exception.getErrorType());
+      assertEquals(failure.getMessage(), exception.getMessage());
+      assertEquals(failure, exception.getCause());
+
       verify(oulAdapter).endOperativUppgift(eq(uppgiftId), eq(END_REASON));
    }
 
