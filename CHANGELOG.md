@@ -2,6 +2,12 @@
 
 Changelog of rimfrost-framework-regel-oul.
 
+## 0.1.1 (2026-09-18)
+
+### Bug Fixes
+
+-  Bump rimfrost-framework-oul version ([1fb86](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/1fb868467da0e8e) Lars Persson)  
+
 ## 0.1.0 (2026-09-14)
 
 ### Features
