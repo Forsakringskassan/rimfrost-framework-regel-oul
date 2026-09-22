@@ -2,6 +2,13 @@
 
 Changelog of rimfrost-framework-regel-oul.
 
+## 0.1.2 (2026-09-22)
+
+### Bug Fixes
+
+-  handle null utforarId in handleOulStatus for unassign case ([99103](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/99103c3e3703aa7) Ulf Slunga)  
+-  bump rimfrost-framework-regel-oul-asyncapi to 0.0.2, rimfrost-framework-regel to 1.4.4, rimfrost-framework-oul-adapter to 1.1.5 ([ecc2f](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/ecc2f162367b4ad) Ulf Slunga)  
+
 ## 0.1.1 (2026-09-18)
 
 ### Bug Fixes
