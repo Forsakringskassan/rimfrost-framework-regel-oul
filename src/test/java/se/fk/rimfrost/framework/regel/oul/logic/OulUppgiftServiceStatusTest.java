@@ -159,6 +159,25 @@ class OulUppgiftServiceStatusTest extends OulUppgiftServiceTestBase
    }
 
    @Test
+   @DisplayName("FROUL-FR-02.6: handleOulStatus sätter utförar-ID till null vid unassign-statusnotifiering")
+   void status_with_null_utforar_id_should_clear_utforar_in_stored_uppgift()
+   {
+      UUID handlaggningId = UUID.fromString(WireMockRegelOul.DEFAULT_HANDLAGGNING_ID);
+      seedRegelCommonData(handlaggningId);
+      OulStatus status = OulTestData.oulStatusWithNullUtforarId(handlaggningId,
+            UUID.fromString(WireMockRegelOul.DEFAULT_UPPGIFT_ID), NEW_STATUS,
+            OulTestData.cloudEventData());
+
+      oulUppgiftService.handleOulStatus(status);
+
+      RegelCommonData stored = regelCommonDataStorage.getRegelCommonData(handlaggningId);
+      assertThat(stored).isNotNull();
+      assertThat(stored.uppgift().utforarId()).isNull();
+      assertThat(stored.uppgift().uppgiftStatus()).isEqualTo(NEW_STATUS);
+      assertThat(stored.uppgift().version()).isEqualTo(SEEDED_UPPGIFT_VERSION + 1);
+   }
+
+   @Test
    @DisplayName("FROUL-FR-02.5: handleOulStatus ignorerar notifiering utan lagrad RegelCommonData")
    void status_should_be_ignored_when_no_regel_common_data()
    {

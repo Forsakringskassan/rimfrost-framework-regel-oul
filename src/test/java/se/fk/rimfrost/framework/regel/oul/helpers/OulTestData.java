@@ -174,4 +174,30 @@ public final class OulTestData
             .planeradTill(OffsetDateTime.now().plusDays(1).truncatedTo(ChronoUnit.MICROS))
             .build();
    }
+
+   /**
+    * Builds an {@link OulStatus} with {@code utforarId} set to {@code null},
+    * as OUL sends after an unassign operation.
+    *
+    * @param handlaggningId the handläggning id the callback refers to
+    * @param uppgiftId      the OUL uppgift id the callback refers to
+    * @param uppgiftStatus  the new uppgift status
+    * @param cloudEventData typed CloudEvent metadata
+    * @return an {@link OulStatus} without utförar-ID
+    */
+   public static OulStatus oulStatusWithNullUtforarId(UUID handlaggningId, UUID uppgiftId,
+         String uppgiftStatus, CloudEventData cloudEventData)
+   {
+      Map<String, String> attributes = CloudEventAttributesMapper.toAttributes(cloudEventData);
+      return ImmutableOulStatus.builder()
+            .handlaggningId(handlaggningId)
+            .uppgiftId(uppgiftId)
+            .uppgiftStatus(uppgiftStatus)
+            .processInfo(ImmutableProcessInfo.builder()
+                  .replyTopic(DEFAULT_REPLY_TOPIC)
+                  .cloudeventAttributes(attributes)
+                  .build())
+            .planeradTill(OffsetDateTime.now().plusDays(1).truncatedTo(ChronoUnit.MICROS))
+            .build();
+   }
 }
