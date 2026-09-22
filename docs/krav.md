@@ -57,6 +57,8 @@ underliggande ramverk upprepas inte.
 - **FROUL-FR-02.5** Om en OUL-statusnotifiering tas emot för en handläggning utan lagrad
   `RegelCommonData` ska ramverket ignorera notifieringen utan att avsluta uppgiften eller
   skicka ett felmeddelande.
+- **FROUL-FR-02.6** En statusnotifiering med `utforarId` satt till `null` ska tolkas som en
+  unassign. Ramverket ska lagra `null` som utförar-ID utan att kasta fel.
 
 ### FROUL-FR-03 — Persistens av korrelationstillstånd
 

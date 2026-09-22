@@ -1,5 +1,6 @@
 package se.fk.rimfrost.framework.regel.oul.logic;
 
+import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.time.OffsetDateTime;
@@ -316,7 +317,7 @@ public class OulUppgiftService implements OulHandlerInterface
          Uppgift updatedUppgift = ImmutableUppgift.builder()
                .from(uppgift)
                .version(uppgift.version() + 1)
-               .utforarId(toHandlaggningModelIdtyp(Objects.requireNonNull(oulStatus.utforarId())))
+               .utforarId(toHandlaggningModelIdtyp(oulStatus.utforarId()))
                .planeradTs(oulStatus.planeradTill())
                .uppgiftStatus(oulStatus.uppgiftStatus())
                .build();
@@ -584,8 +585,13 @@ public class OulUppgiftService implements OulHandlerInterface
             .build();
    }
 
-   private Idtyp toHandlaggningModelIdtyp(se.fk.rimfrost.framework.oul.logic.dto.Idtyp idtyp)
+   @Nullable
+   private Idtyp toHandlaggningModelIdtyp(@Nullable se.fk.rimfrost.framework.oul.logic.dto.Idtyp idtyp)
    {
+      if (idtyp == null)
+      {
+         return null;
+      }
       return ImmutableIdtyp.builder()
             .typId(idtyp.typId())
             .varde(idtyp.varde())
