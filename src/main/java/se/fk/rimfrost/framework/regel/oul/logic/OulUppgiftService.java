@@ -372,6 +372,7 @@ public class OulUppgiftService implements OulHandlerInterface
                   .replyTopic(spec.replyTo())
                   .cloudeventAttributes(spec.cloudEventAttributes())
                   .build())
+            .assignable(spec.assignable())
             .build();
    }
 

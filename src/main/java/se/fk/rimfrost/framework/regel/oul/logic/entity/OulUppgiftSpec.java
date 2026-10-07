@@ -68,6 +68,9 @@ public interface OulUppgiftSpec
    /** Version of the {@code UppgiftSpecifikation} the uppgift references. */
    Integer uppgiftSpecifikationVersion();
 
+   /** Flag indicating if the uppgift can be assigned in OUL by the normal workflow **/
+   boolean assignable();
+
    /** OUL request business version. Defaults to {@code "1"}. */
    @Value.Default
    default String version()
