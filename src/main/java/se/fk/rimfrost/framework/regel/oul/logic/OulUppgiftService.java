@@ -133,9 +133,7 @@ public class OulUppgiftService implements OulHandlerInterface
 
          HandlaggningUpdate handlaggningUpdate = createHandlaggningUpdate(
                spec.handlaggning(),
-               uppgift,
-               spec.cloudEventData().kogitoprocinstanceid(),
-               spec.handlaggning().version() + 1);
+               uppgift);
          updateHandlaggning(handlaggningUpdate, spec.cloudEventData());
 
          writeCloudEventData(spec.handlaggningId(), spec.cloudEventData());
@@ -269,6 +267,42 @@ public class OulUppgiftService implements OulHandlerInterface
    }
 
    /**
+    * Persists an updated {@link Uppgift} for the given handläggning and syncs
+    * it to the handläggning service (FROUL-FR-01.15).
+    *
+    * <p>Intended for consumer regel services that need to update the uppgift as
+    * part of their own business logic. Keeps storage and handläggning sync
+    * encapsulated so consumers do not interact with {@link RegelCommonDataStorage}
+    * or {@link HandlaggningAdapter} directly.
+    *
+    * @param handlaggningId the handläggning the uppgift belongs to
+    * @param updatedUppgift the new uppgift state to persist and sync
+    * @param cloudEventData the current CloudEvent context, used for error reporting
+    * @throws RegelCancelledException if the storage write or handläggning sync fails
+    */
+   public void updateUppgift(UUID handlaggningId, Uppgift updatedUppgift, CloudEventData cloudEventData)
+   {
+      Handlaggning handlaggning = getHandlaggning(handlaggningId, cloudEventData);
+
+      RegelCommonData commonData = readRegelCommonData(handlaggningId);
+      if (commonData == null)
+      {
+         String message = String.format(
+               "No RegelCommonData found for handlaggningId: %s — createOulUppgift must be called first", handlaggningId);
+         throw new RegelCancelledException(
+               createRegelErrorInformation(RegelFelkod.RIMFROST_MANUELL_REGEL_COMMON_DATA_READ_FAILURE, message),
+               message, null);
+      }
+
+      writeRegelCommonData(handlaggningId, ImmutableRegelCommonData.builder()
+            .from(commonData)
+            .uppgift(updatedUppgift)
+            .build());
+
+      updateHandlaggning(createHandlaggningUpdate(handlaggning, updatedUppgift), cloudEventData);
+   }
+
+   /**
     * Best-effort deletes all correlation state for a handläggning. Individual
     * failures are logged but never abort the remaining deletes.
     *
@@ -317,16 +351,14 @@ public class OulUppgiftService implements OulHandlerInterface
          Uppgift updatedUppgift = ImmutableUppgift.builder()
                .from(uppgift)
                .version(uppgift.version() + 1)
-               .utforarId(toHandlaggningModelIdtyp(oulStatus.utforarId()))
-               .planeradTs(oulStatus.planeradTill())
+               .utforare(toHandlaggningModelIdtyp(oulStatus.utforarId()))
+               .planeradTillTS(oulStatus.planeradTill())
                .uppgiftStatus(oulStatus.uppgiftStatus())
                .build();
 
          HandlaggningUpdate handlaggningUpdate = createHandlaggningUpdate(
                handlaggning,
-               updatedUppgift,
-               handlaggning.processInstansId(),
-               handlaggning.version());
+               updatedUppgift);
 
          RegelCommonData updatedCommonRegelData = ImmutableRegelCommonData.builder()
                .from(commonRegelData)
@@ -382,7 +414,7 @@ public class OulUppgiftService implements OulHandlerInterface
             .id(UUID.randomUUID())
             .version(1)
             .aktivitetId(spec.aktivitetId())
-            .skapadTs(OffsetDateTime.now())
+            .skapadTS(OffsetDateTime.now())
             .uppgiftStatus(status)
             .fSSAinformation(FSSA_INFORMATION_PLACEHOLDER)
             .uppgiftSpecifikation(createUppgiftSpecifikation(spec))
@@ -564,24 +596,17 @@ public class OulUppgiftService implements OulHandlerInterface
       {
          String message = String.format(
                "Failed to write handlaggning update. handlaggningId: %s, kogitoprocId: %s",
-               handlaggningUpdate.id(), cloudEventData.kogitoprocinstanceid());
+               handlaggningUpdate.handlaggning().id(), cloudEventData.kogitoprocinstanceid());
          throw new RegelCancelledException(
                createRegelErrorInformation(RegelFelkod.RIMFROST_HANDLAGGNING_WRITE_FAILURE, message),
                message, e);
       }
    }
 
-   private HandlaggningUpdate createHandlaggningUpdate(Handlaggning handlaggning, Uppgift uppgift,
-         UUID kogitoprocInstanceId, int version)
+   private HandlaggningUpdate createHandlaggningUpdate(Handlaggning handlaggning, Uppgift uppgift)
    {
       return ImmutableHandlaggningUpdate.builder()
-            .id(handlaggning.id())
-            .version(version)
-            .yrkande(handlaggning.yrkande())
-            .processInstansId(kogitoprocInstanceId)
-            .skapadTS(handlaggning.skapadTS())
-            .avslutadTS(handlaggning.avslutadTS())
-            .handlaggningspecifikationId(handlaggning.handlaggningspecifikationId())
+            .handlaggning(handlaggning)
             .uppgift(uppgift)
             .build();
    }
