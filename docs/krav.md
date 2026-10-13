@@ -45,6 +45,11 @@ underliggande ramverk upprepas inte.
   kan hantera felet.
 - **FROUL-FR-01.14** Fel som uppstår vid skapande av ny uppgift via OUL-tjänsten (`createOperativUppgift`) ska kastas 
   vidare som exception så att den som anropat OUL-tjänsten kan hantera felet.
+- **FROUL-FR-01.15** Ramverket ska tillhandahålla en operation (`updateUppgift`) för att
+  uppdatera en uppgifts tillstånd och synkronisera det till handläggningstjänsten. Operationen
+  ska lagra den uppdaterade uppgiften i `RegelCommonData` och spegla förändringen via ett
+  handläggnings-PUT, utan att konsumenten behöver interagera med lagring eller
+  handläggningstjänst direkt.
 
 ### FROUL-FR-02 — Hantering av OUL-statusnotifieringar
 
