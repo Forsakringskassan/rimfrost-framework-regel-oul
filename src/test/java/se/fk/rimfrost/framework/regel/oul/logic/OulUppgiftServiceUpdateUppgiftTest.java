@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import se.fk.rimfrost.framework.handlaggning.exception.HandlaggningException;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgift;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgiftSpecifikation;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgift;
-import se.fk.rimfrost.framework.regel.logic.RegelCancelledException;
 import se.fk.rimfrost.framework.regel.oul.base.OulUppgiftServiceTestBase;
 import se.fk.rimfrost.framework.regel.oul.helpers.OulTestData;
 import se.fk.rimfrost.framework.regel.oul.helpers.WireMockRegelOul;
@@ -26,8 +26,7 @@ import se.fk.rimfrost.framework.regel.oul.storage.entity.ImmutableRegelCommonDat
 import se.fk.rimfrost.framework.regel.oul.storage.entity.RegelCommonData;
 
 /**
- * Tests for {@link OulUppgiftService#updateUppgift(UUID, Uppgift, se.fk.rimfrost.framework.regel.logic.entity.CloudEventData)}
- * covering FROUL-FR-01.15.
+ * Tests for {@link OulUppgiftService#updateUppgift(UUID, Uppgift)} covering FROUL-FR-01.15.
  */
 @QuarkusTest
 @QuarkusTestResource(WireMockRegelOul.class)
@@ -71,7 +70,7 @@ class OulUppgiftServiceUpdateUppgiftTest extends OulUppgiftServiceTestBase
 
    @Test
    @DisplayName("FROUL-FR-01.15: updateUppgift lagrar uppdaterad uppgift i RegelCommonData")
-   void updateUppgift_should_persist_updated_uppgift()
+   void updateUppgift_should_persist_updated_uppgift() throws HandlaggningException
    {
       UUID handlaggningId = UUID.fromString(WireMockRegelOul.DEFAULT_HANDLAGGNING_ID);
       seedRegelCommonData(handlaggningId);
@@ -81,7 +80,7 @@ class OulUppgiftServiceUpdateUppgiftTest extends OulUppgiftServiceTestBase
             .uppgiftStatus(NEW_STATUS)
             .build();
 
-      oulUppgiftService.updateUppgift(handlaggningId, updated, OulTestData.cloudEventData());
+      oulUppgiftService.updateUppgift(handlaggningId, updated);
 
       RegelCommonData stored = regelCommonDataStorage.getRegelCommonData(handlaggningId);
       assertThat(stored.uppgift().version()).isEqualTo(SEEDED_VERSION + 1);
@@ -100,7 +99,7 @@ class OulUppgiftServiceUpdateUppgiftTest extends OulUppgiftServiceTestBase
             .uppgiftStatus(NEW_STATUS)
             .build();
 
-      oulUppgiftService.updateUppgift(handlaggningId, updated, OulTestData.cloudEventData());
+      oulUppgiftService.updateUppgift(handlaggningId, updated);
 
       List<LoggedRequest> puts = WireMockRegelOul.waitForHandlaggningRequests(
             handlaggningId.toString(), RequestMethod.PUT, 1);
@@ -111,11 +110,11 @@ class OulUppgiftServiceUpdateUppgiftTest extends OulUppgiftServiceTestBase
    }
 
    @Test
-   @DisplayName("FROUL-FR-01.15: updateUppgift kastar RegelCancelledException om RegelCommonData saknas")
+   @DisplayName("FROUL-FR-01.15: updateUppgift kastar IllegalStateException om RegelCommonData saknas")
    void updateUppgift_should_throw_when_no_common_data()
    {
       assertThatThrownBy(
-            () -> oulUppgiftService.updateUppgift(UUID.randomUUID(), OulTestData.seedUppgift(), OulTestData.cloudEventData()))
-            .isInstanceOf(RegelCancelledException.class);
+            () -> oulUppgiftService.updateUppgift(UUID.randomUUID(), OulTestData.seedUppgift()))
+            .isInstanceOf(IllegalStateException.class);
    }
 }

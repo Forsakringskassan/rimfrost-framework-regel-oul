@@ -270,28 +270,26 @@ public class OulUppgiftService implements OulHandlerInterface
     * Persists an updated {@link Uppgift} for the given handläggning and syncs
     * it to the handläggning service (FROUL-FR-01.15).
     *
-    * <p>Intended for consumer regel services that need to update the uppgift as
-    * part of their own business logic. Keeps storage and handläggning sync
-    * encapsulated so consumers do not interact with {@link RegelCommonDataStorage}
-    * or {@link HandlaggningAdapter} directly.
+    * <p>Intended for consumers that need to update the uppgift as part of their
+    * own business logic — from either a Regel flow or a REST controller. Keeps
+    * storage and handläggning sync encapsulated so callers do not interact with
+    * {@link RegelCommonDataStorage} or {@link HandlaggningAdapter} directly.
     *
     * @param handlaggningId the handläggning the uppgift belongs to
     * @param updatedUppgift the new uppgift state to persist and sync
-    * @param cloudEventData the current CloudEvent context, used for error reporting
-    * @throws RegelCancelledException if the storage write or handläggning sync fails
+    * @throws IllegalStateException if no prior {@code RegelCommonData} exists for the handläggning
+    * @throws HandlaggningException if the handläggning read or update fails
     */
-   public void updateUppgift(UUID handlaggningId, Uppgift updatedUppgift, CloudEventData cloudEventData)
+   public void updateUppgift(UUID handlaggningId, Uppgift updatedUppgift) throws HandlaggningException
    {
-      Handlaggning handlaggning = getHandlaggning(handlaggningId, cloudEventData);
+      Handlaggning handlaggning = handlaggningAdapter.readHandlaggning(handlaggningId);
 
       RegelCommonData commonData = readRegelCommonData(handlaggningId);
       if (commonData == null)
       {
-         String message = String.format(
-               "No RegelCommonData found for handlaggningId: %s — createOulUppgift must be called first", handlaggningId);
-         throw new RegelCancelledException(
-               createRegelErrorInformation(RegelFelkod.RIMFROST_MANUELL_REGEL_COMMON_DATA_READ_FAILURE, message),
-               message, null);
+         throw new IllegalStateException(String.format(
+               "No RegelCommonData found for handlaggningId: %s — createOulUppgift must be called first",
+               handlaggningId));
       }
 
       writeRegelCommonData(handlaggningId, ImmutableRegelCommonData.builder()
@@ -299,7 +297,7 @@ public class OulUppgiftService implements OulHandlerInterface
             .uppgift(updatedUppgift)
             .build());
 
-      updateHandlaggning(createHandlaggningUpdate(handlaggning, updatedUppgift), cloudEventData);
+      handlaggningAdapter.updateHandlaggning(createHandlaggningUpdate(handlaggning, updatedUppgift));
    }
 
    /**
