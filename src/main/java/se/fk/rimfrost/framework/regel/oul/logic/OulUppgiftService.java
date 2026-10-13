@@ -284,7 +284,7 @@ public class OulUppgiftService implements OulHandlerInterface
    {
       Handlaggning handlaggning = handlaggningAdapter.readHandlaggning(handlaggningId);
 
-      RegelCommonData commonData = readRegelCommonData(handlaggningId);
+      RegelCommonData commonData = regelCommonDataStorage.getRegelCommonData(handlaggningId);
       if (commonData == null)
       {
          throw new IllegalStateException(String.format(
@@ -292,7 +292,7 @@ public class OulUppgiftService implements OulHandlerInterface
                handlaggningId));
       }
 
-      writeRegelCommonData(handlaggningId, ImmutableRegelCommonData.builder()
+      regelCommonDataStorage.setRegelCommonData(handlaggningId, ImmutableRegelCommonData.builder()
             .from(commonData)
             .uppgift(updatedUppgift)
             .build());
