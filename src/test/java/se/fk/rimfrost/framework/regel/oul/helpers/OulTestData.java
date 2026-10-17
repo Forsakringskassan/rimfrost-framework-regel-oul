@@ -117,6 +117,7 @@ public final class OulTestData
             .aktivitetId(UUID.randomUUID())
             .uppgiftSpecifikationId(UUID.randomUUID())
             .uppgiftSpecifikationVersion(1)
+            .assignable(true)
             .build();
    }
 
