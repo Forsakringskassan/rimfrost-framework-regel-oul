@@ -28,6 +28,7 @@ import se.fk.rimfrost.framework.regel.oul.base.OulUppgiftServiceTestBase;
 import se.fk.rimfrost.framework.regel.oul.helpers.OulTestData;
 import se.fk.rimfrost.framework.regel.oul.helpers.WireMockRegelOul;
 import se.fk.rimfrost.framework.regel.logic.entity.CloudEventData;
+import se.fk.rimfrost.framework.regel.oul.logic.entity.ImmutableOulUppgiftSpec;
 import se.fk.rimfrost.framework.regel.oul.logic.entity.OulUppgiftSpec;
 import se.fk.rimfrost.framework.regel.oul.logic.exception.OulServiceException;
 import se.fk.rimfrost.framework.regel.oul.storage.CloudEventDataStorage;
@@ -38,8 +39,8 @@ import se.fk.rimfrost.framework.regel.oul.storage.entity.RegelCommonData;
 
 /**
  * Tests for {@link OulUppgiftService#createOulUppgift} covering the OUL
- * request shape (FROUL-FR-01.1..1.8) and the correlation persistence side
- * effects (FROUL-FR-03.1..3.4).
+ * request shape (FROUL-FR-01.1..1.8, FROUL-FR-05.1..5.2) and the correlation
+ * persistence side effects (FROUL-FR-03.1..3.4).
  *
  * <p>Uses WireMock (via {@link WireMockRegelOul}) to capture and inspect the
  * outbound OUL and handläggning requests, and reads the three correlation
@@ -233,5 +234,38 @@ class OulUppgiftServiceCreateTest extends OulUppgiftServiceTestBase
       assertThat(stored).isNotNull();
       assertThat(stored.uppgift().id()).isNotNull();
       assertThat(stored.oulUppgiftId()).isEqualTo(UUID.fromString(WireMockRegelOul.DEFAULT_UPPGIFT_ID));
+   }
+
+   @Test
+   @DisplayName("FROUL-FR-05.2: OUL-uppgift innehåller aktivitetId och processvyUrl i processInfo")
+   void createOulUppgift_should_include_aktivitet_id_and_processvy_url_in_processInfo() throws Exception
+   {
+      Handlaggning handlaggning = OulTestData.handlaggning(UUID.randomUUID(), 1);
+      OulUppgiftSpec spec = OulTestData.oulUppgiftSpec(handlaggning, OulTestData.cloudEventData());
+      oulUppgiftService.createOulUppgift(spec);
+
+      JsonNode processInfo = lastOulCreateRequestBody().get("process_info");
+      assertThat(processInfo.get("aktivitet_id").asText()).isEqualTo(spec.aktivitetId().toString());
+      assertThat(processInfo.get("processvy_url").asText()).isEqualTo(OulTestData.DEFAULT_PROCESSVY_URL);
+   }
+
+   @Test
+   @DisplayName("FROUL-FR-05.1: OUL-uppgift skapas utan processvyUrl")
+   void createOulUppgift_without_processvy_url_should_create_uppgift_without_it() throws Exception
+   {
+      UUID handlaggningId = UUID.randomUUID();
+      Handlaggning handlaggning = OulTestData.handlaggning(handlaggningId, 1);
+      OulUppgiftSpec spec = ImmutableOulUppgiftSpec.builder()
+            .from(OulTestData.oulUppgiftSpec(handlaggning, OulTestData.cloudEventData()))
+            .processvyUrl(null)
+            .build();
+      oulUppgiftService.createOulUppgift(spec);
+
+      JsonNode processInfo = lastOulCreateRequestBody().get("process_info");
+      assertThat(processInfo.path("processvy_url").isMissingNode() || processInfo.get("processvy_url").isNull())
+            .isTrue();
+      assertThat(processInfo.get("aktivitet_id").asText()).isEqualTo(spec.aktivitetId().toString());
+      assertThat(regelCommonDataStorage.getRegelCommonData(handlaggningId).oulUppgiftId())
+            .isEqualTo(UUID.fromString(WireMockRegelOul.DEFAULT_UPPGIFT_ID));
    }
 }

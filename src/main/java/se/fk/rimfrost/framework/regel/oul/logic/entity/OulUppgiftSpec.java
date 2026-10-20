@@ -1,5 +1,6 @@
 package se.fk.rimfrost.framework.regel.oul.logic.entity;
 
+import jakarta.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 import org.immutables.value.Value;
@@ -59,8 +60,20 @@ public interface OulUppgiftSpec
    /** Erbjudande the uppgift is associated with. */
    Erbjudande erbjudande();
 
-   /** Aktivitet the uppgift belongs to (identifier from the handläggning model). */
+   /**
+    * Aktivitet the uppgift belongs to (identifier from the handläggning model).
+    * Forwarded to OUL as {@code process_info.aktivitet_id}.
+    */
    UUID aktivitetId();
+
+   /**
+    * Link to the process's processvy (stegindikator), taken from the regel
+    * request. Forwarded to OUL as {@code process_info.processvy_url} when
+    * present; never persisted by the framework. Optional — an uppgift without
+    * it is created as usual, it just has no processvy.
+    */
+   @Nullable
+   String processvyUrl();
 
    /** ID of the {@code UppgiftSpecifikation} the uppgift references. */
    UUID uppgiftSpecifikationId();
