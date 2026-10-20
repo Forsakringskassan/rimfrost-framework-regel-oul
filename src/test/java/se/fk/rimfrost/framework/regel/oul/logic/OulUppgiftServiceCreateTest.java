@@ -17,6 +17,8 @@ import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +42,7 @@ import se.fk.rimfrost.framework.regel.oul.storage.entity.RegelCommonData;
 /**
  * Tests for {@link OulUppgiftService#createOulUppgift} covering the OUL
  * request shape (FROUL-FR-01.1..1.8, FROUL-FR-05.1..5.2) and the correlation
- * persistence side effects (FROUL-FR-03.1..3.4).
+ * persistence side effects (FROUL-FR-03.1..3.4, FROUL-FR-05.3).
  *
  * <p>Uses WireMock (via {@link WireMockRegelOul}) to capture and inspect the
  * outbound OUL and handläggning requests, and reads the three correlation
@@ -250,7 +252,7 @@ class OulUppgiftServiceCreateTest extends OulUppgiftServiceTestBase
    }
 
    @Test
-   @DisplayName("FROUL-FR-05.1: OUL-uppgift skapas utan processvyUrl")
+   @DisplayName("FROUL-FR-05.1 & FROUL-FR-05.2: OUL-uppgift skapas utan processvyUrl")
    void createOulUppgift_without_processvy_url_should_create_uppgift_without_it() throws Exception
    {
       UUID handlaggningId = UUID.randomUUID();
@@ -267,5 +269,13 @@ class OulUppgiftServiceCreateTest extends OulUppgiftServiceTestBase
       assertThat(processInfo.get("aktivitet_id").asText()).isEqualTo(spec.aktivitetId().toString());
       assertThat(regelCommonDataStorage.getRegelCommonData(handlaggningId).oulUppgiftId())
             .isEqualTo(UUID.fromString(WireMockRegelOul.DEFAULT_UPPGIFT_ID));
+   }
+
+   @Test
+   @DisplayName("FROUL-FR-05.3: processvyUrl sparas inte i RegelCommonData")
+   void regelCommonData_should_not_carry_processvy_url()
+   {
+      assertThat(Arrays.stream(RegelCommonData.class.getMethods()).map(Method::getName))
+            .noneMatch(name -> name.toLowerCase().contains("processvy"));
    }
 }
