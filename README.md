@@ -52,6 +52,7 @@ OperativUppgift uppgift = oulUppgiftService.createOulUppgift(
         .url("/min-regel/uppgift")
         .erbjudande(erbjudande)
         .aktivitetId(aktivitetId)
+        .processvyUrl(processvyUrl) // valfri, från regelanropet
         .uppgiftSpecifikationId(uppgiftSpecifikationId)
         .uppgiftSpecifikationVersion(1)
         .build());

@@ -99,6 +99,17 @@ underliggande ramverk upprepas inte.
   korrelationsdata ska ramverket ignorera eventet utan att skicka felmeddelande, analogt med
   FROUL-FR-02.5.
 
+### FROUL-FR-05 — Aktivitet och processvy-länk till OUL
+
+- **FROUL-FR-05.1** `OulUppgiftSpec` ska kunna bära `processvyUrl`. `processvyUrl` är valfri.
+  `aktivitetId` förblir obligatorisk i `OulUppgiftSpec`, eftersom den kommer från regelanropet
+  (där den är obligatorisk) och behövs för uppgiften i handläggningen.
+- **FROUL-FR-05.2** När uppgiften skapas ska `aktivitetId` och `processvyUrl` skickas till OUL som
+  `process_info.aktivitet_id` och `process_info.processvy_url`, när de finns. En uppgift utan
+  `processvyUrl` skapas som vanligt.
+- **FROUL-FR-05.3** *(ej testbar — designkrav)* `processvyUrl` ska inte sparas i regelns egen
+  databas (`RegelCommonData`). Ingen databasmigrering behövs.
+
 ---
 
 ## 2. Persistenskrav

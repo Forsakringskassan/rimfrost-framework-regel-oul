@@ -368,6 +368,8 @@ public class OulUppgiftService implements OulHandlerInterface
             .url(spec.url())
             .subTopic(oulReplyToSubTopic)
             .erbjudande(toErbjudande(spec.erbjudande()))
+            .aktivitetId(spec.aktivitetId())
+            .processvyUrl(spec.processvyUrl())
             .processInfo(ImmutableProcessInfo.builder()
                   .replyTopic(spec.replyTo())
                   .cloudeventAttributes(spec.cloudEventAttributes())
