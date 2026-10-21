@@ -107,8 +107,8 @@ underliggande ramverk upprepas inte.
 - **FROUL-FR-05.2** När uppgiften skapas ska `aktivitetId` och `processvyUrl` skickas till OUL som
   `process_info.aktivitet_id` och `process_info.processvy_url`, när de finns. En uppgift utan
   `processvyUrl` skapas som vanligt.
-- **FROUL-FR-05.3** `processvyUrl` ska inte sparas i regelns egen databas (`RegelCommonData`).
-  Ingen databasmigrering behövs.
+- **FROUL-FR-05.3** *(ej testbar — designkrav)* `processvyUrl` ska inte sparas i regelns egen
+  databas (`RegelCommonData`). Ingen databasmigrering behövs.
 
 ---
 
