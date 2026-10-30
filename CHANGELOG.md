@@ -2,6 +2,50 @@
 
 Changelog of rimfrost-framework-regel-oul.
 
+## 0.2.0 (2026-10-30)
+
+### Features
+
+-  send aktivitetId and optional processvyUrl to OUL when creating uppgift (FKPOC-1160) ([7bcbb](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/7bcbbfa16acbc0f) LisaWedin_Ductus)  
+
+### Bug Fixes
+
+-  update pom.xml ([59a7e](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/59a7e932129697a) Nils Elveros)  
+-  update workflows ([aada4](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/aada473067ec1b9) Nils Elveros)  
+-  mark FROUL-FR-05.3 as untestable and drop name-based test (FKPOC-1160) ([56ea8](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/56ea83d7f5e889f) LisaWedin_Ductus)  
+-  åtgärda review-kommentarer (FKPOC-1160) ([6f5e8](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/6f5e8c31ce17ea3) LisaWedin_Ductus)  
+-  **deps**  update dependency org.immutables:value to v2.12.3 ([6adf3](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/6adf3924fb27958) renovate[bot])  
+-  Add storage failure fault tests for updateUppgift ([94d3a](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/94d3a41ff9e6914) Ulf Slunga)  
+-  Add HandlaggningException fault tests for updateUppgift ([f2d3f](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/f2d3f77674b79fa) Ulf Slunga)  
+-  bypass RegelCancelledException wrappers in updateUppgift storage calls ([eb00d](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/eb00d1823f7323d) Ulf Slunga)  
+-  simplify updateUppgift to call adapter directly without CloudEventData ([d1e21](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/d1e2119f9621cf1) Ulf Slunga)  
+-  adapt to handlaggning-adapter 1.2.5 API changes and add updateUppgift operation ([eeac4](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/eeac4a61c84caf1) Ulf Slunga)  
+-  **deps**  update dependency org.yaml:snakeyaml to v2.7 ([66cb8](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/66cb8c7f76b47d9) renovate[bot])  
+-  Add support for assignable flag from OUL adapter ([019d3](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/019d3a06d073b77) Lars Persson)  
+-  **deps**  update dependency se.fk.rimfrost.framework.oul:rimfrost-framework-oul to v1.1.3 ([c9abb](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/c9abbd8c82279db) renovate[bot])  
+
+### Dependency updates
+
+- update dependency org.immutables:value-processor to v2.12.3 ([39725](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/397252463658a15) renovate[bot])  
+- update forsakringskassan/.github digest to cbd74f1 ([9ee4b](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/9ee4bceda3f89dd) renovate[bot])  
+- update dependency org.apache.maven.plugins:maven-compiler-plugin to v3.16.0 ([3dee6](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/3dee67bdd5c900c) renovate[bot])  
+- update dependency io.smallrye:jandex-maven-plugin to v3.6.0 ([e4410](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/e4410eb9095394d) renovate[bot])  
+- pin forsakringskassan/.github action to bfb01f7 ([a9ab6](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/a9ab63dd0de59a1) renovate[bot])  
+### Other changes
+
+**Merge branch 'main' into feat/FKPOC-1160-process-info-processvy**
+
+
+[dbae8](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/dbae854ac0dec85) NilsElveros *2026-10-30 13:34:42*
+
+**Merge branch 'main' into fix/FKPOC-1121-add-assignable-flag**
+
+
+[63d9b](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/63d9b7160624b21) NilsElveros *2026-10-30 13:27:45*
+
+
+## rimfrost-1_2 (2026-09-22)
+
 ## 0.1.2 (2026-09-22)
 
 ### Bug Fixes
