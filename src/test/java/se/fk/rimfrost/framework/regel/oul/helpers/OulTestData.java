@@ -31,6 +31,7 @@ import se.fk.rimfrost.framework.regel.logic.entity.ImmutableCloudEventData;
 public final class OulTestData
 {
    public static final String DEFAULT_REPLY_TOPIC = "regel-response-test";
+   public static final String DEFAULT_PROCESSVY_URL = "/process/vah";
    public static final String DEFAULT_UTFORAR_TYP = "PID";
    public static final String DEFAULT_UTFORAR_VARDE = "197001010000";
 
@@ -116,6 +117,7 @@ public final class OulTestData
             .url("/test/uppgift")
             .erbjudande(erbjudande())
             .aktivitetId(UUID.randomUUID())
+            .processvyUrl(DEFAULT_PROCESSVY_URL)
             .uppgiftSpecifikationId(UUID.randomUUID())
             .uppgiftSpecifikationVersion(1)
             .assignable(true)
