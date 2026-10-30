@@ -40,19 +40,19 @@ class RegelCommonDataMapper
    {
       entity.uppgiftId = uppgift.id();
       entity.uppgiftVersion = uppgift.version();
-      entity.uppgiftSkapadTs = uppgift.skapadTs().toInstant();
-      entity.uppgiftUtfordTs = uppgift.utfordTs() != null ? uppgift.utfordTs().toInstant() : null;
-      entity.uppgiftPlaneradTs = uppgift.planeradTs() != null ? uppgift.planeradTs().toInstant() : null;
+      entity.uppgiftSkapadTs = uppgift.skapadTS().toInstant();
+      entity.uppgiftUtfordTs = uppgift.utfordTS() != null ? uppgift.utfordTS().toInstant() : null;
+      entity.uppgiftPlaneradTs = uppgift.planeradTillTS() != null ? uppgift.planeradTillTS().toInstant() : null;
       entity.uppgiftStatus = uppgift.uppgiftStatus();
       entity.uppgiftAktivitetId = uppgift.aktivitetId();
       entity.uppgiftFssaInformation = uppgift.fSSAinformation();
       entity.uppgiftSpecifikationId = uppgift.uppgiftSpecifikation().id();
       entity.uppgiftSpecifikationVersion = uppgift.uppgiftSpecifikation().version();
 
-      if (uppgift.utforarId() != null)
+      if (uppgift.utforare() != null)
       {
-         entity.uppgiftUtforarIdTypId = uppgift.utforarId().typId();
-         entity.uppgiftUtforarIdVarde = uppgift.utforarId().varde();
+         entity.uppgiftUtforarIdTypId = uppgift.utforare().typId();
+         entity.uppgiftUtforarIdVarde = uppgift.utforare().varde();
       }
    }
 
@@ -61,7 +61,7 @@ class RegelCommonDataMapper
       var builder = ImmutableUppgift.builder()
             .id(entity.uppgiftId)
             .version(entity.uppgiftVersion)
-            .skapadTs(OffsetDateTime.ofInstant(entity.uppgiftSkapadTs, ZoneId.systemDefault()))
+            .skapadTS(OffsetDateTime.ofInstant(entity.uppgiftSkapadTs, ZoneId.systemDefault()))
             .uppgiftStatus(entity.uppgiftStatus)
             .aktivitetId(entity.uppgiftAktivitetId)
             .fSSAinformation(entity.uppgiftFssaInformation)
@@ -72,15 +72,15 @@ class RegelCommonDataMapper
 
       if (entity.uppgiftUtfordTs != null)
       {
-         builder.utfordTs(OffsetDateTime.ofInstant(entity.uppgiftUtfordTs, ZoneId.systemDefault()));
+         builder.utfordTS(OffsetDateTime.ofInstant(entity.uppgiftUtfordTs, ZoneId.systemDefault()));
       }
       if (entity.uppgiftPlaneradTs != null)
       {
-         builder.planeradTs(OffsetDateTime.ofInstant(entity.uppgiftPlaneradTs, ZoneId.systemDefault()));
+         builder.planeradTillTS(OffsetDateTime.ofInstant(entity.uppgiftPlaneradTs, ZoneId.systemDefault()));
       }
       if (entity.uppgiftUtforarIdTypId != null)
       {
-         builder.utforarId(ImmutableIdtyp.builder()
+         builder.utforare(ImmutableIdtyp.builder()
                .typId(entity.uppgiftUtforarIdTypId)
                .varde(entity.uppgiftUtforarIdVarde)
                .build());

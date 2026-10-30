@@ -178,7 +178,7 @@ class OulUppgiftServiceCreateTest extends OulUppgiftServiceTestBase
             handlaggningId.toString(), RequestMethod.PUT, 1);
       assertThat(puts).hasSize(1);
       JsonNode body = MAPPER.readTree(puts.get(0).getBodyAsString());
-      JsonNode uppgift = body.at("/handlaggning/uppgift");
+      JsonNode uppgift = body.at("/uppgift");
       assertThat(uppgift.isMissingNode()).isFalse();
       assertThat(uppgift.get("id").asText()).isNotBlank();
       assertThat(uppgift.at("/uppgiftspecifikation/id").asText()).isNotBlank();
