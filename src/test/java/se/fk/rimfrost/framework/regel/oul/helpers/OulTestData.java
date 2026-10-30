@@ -53,7 +53,8 @@ public final class OulTestData
             .id(id)
             .version(version)
             .yrkande(mock(Yrkande.class))
-            .processInstansId(UUID.randomUUID())
+            .handlaggningIdTyp("KOGITO")
+            .handlaggningIdVarde(UUID.randomUUID().toString())
             .skapadTS(OffsetDateTime.now())
             .avslutadTS(OffsetDateTime.now())
             .handlaggningspecifikationId(UUID.randomUUID())
@@ -117,6 +118,7 @@ public final class OulTestData
             .aktivitetId(UUID.randomUUID())
             .uppgiftSpecifikationId(UUID.randomUUID())
             .uppgiftSpecifikationVersion(1)
+            .assignable(true)
             .build();
    }
 
@@ -132,7 +134,7 @@ public final class OulTestData
             .id(UUID.randomUUID())
             .version(1)
             .aktivitetId(UUID.randomUUID())
-            .skapadTs(OffsetDateTime.now().truncatedTo(ChronoUnit.MICROS))
+            .skapadTS(OffsetDateTime.now().truncatedTo(ChronoUnit.MICROS))
             .uppgiftStatus("NY")
             .fSSAinformation("FSSAinformation.HANDLAGGNING_PAGAR")
             .uppgiftSpecifikation(ImmutableUppgiftSpecifikation.builder()

@@ -73,7 +73,7 @@ class OulUppgiftServiceStatusTest extends OulUppgiftServiceTestBase
             .id(UUID.randomUUID())
             .version(SEEDED_UPPGIFT_VERSION)
             .aktivitetId(UUID.randomUUID())
-            .skapadTs(OffsetDateTime.now())
+            .skapadTS(OffsetDateTime.now())
             .uppgiftStatus("NY")
             .fSSAinformation("FSSAinformation.HANDLAGGNING_PAGAR")
             .uppgiftSpecifikation(ImmutableUppgiftSpecifikation.builder()
@@ -113,10 +113,10 @@ class OulUppgiftServiceStatusTest extends OulUppgiftServiceTestBase
       assertThat(stored).isNotNull();
       assertThat(stored.uppgift().version()).isEqualTo(SEEDED_UPPGIFT_VERSION + 1);
       assertThat(stored.uppgift().uppgiftStatus()).isEqualTo(NEW_STATUS);
-      assertThat(stored.uppgift().utforarId()).isNotNull();
-      assertThat(stored.uppgift().utforarId().typId()).isEqualTo(OulTestData.DEFAULT_UTFORAR_TYP);
-      assertThat(stored.uppgift().utforarId().varde()).isEqualTo(OulTestData.DEFAULT_UTFORAR_VARDE);
-      assertThat(stored.uppgift().planeradTs()).isEqualTo(status.planeradTill());
+      assertThat(stored.uppgift().utforare()).isNotNull();
+      assertThat(stored.uppgift().utforare().typId()).isEqualTo(OulTestData.DEFAULT_UTFORAR_TYP);
+      assertThat(stored.uppgift().utforare().varde()).isEqualTo(OulTestData.DEFAULT_UTFORAR_VARDE);
+      assertThat(stored.uppgift().planeradTillTS()).isEqualTo(status.planeradTill());
    }
 
    @Test
@@ -135,8 +135,8 @@ class OulUppgiftServiceStatusTest extends OulUppgiftServiceTestBase
             handlaggningId.toString(), RequestMethod.PUT, 1);
       assertThat(puts).hasSize(1);
       JsonNode body = MAPPER.readTree(puts.getFirst().getBodyAsString());
-      assertThat(body.at("/handlaggning/uppgift/uppgiftStatus").asText()).isEqualTo(NEW_STATUS);
-      assertThat(body.at("/handlaggning/uppgift/version").asInt()).isEqualTo(SEEDED_UPPGIFT_VERSION + 1);
+      assertThat(body.at("/uppgift/uppgiftStatus").asText()).isEqualTo(NEW_STATUS);
+      assertThat(body.at("/uppgift/version").asInt()).isEqualTo(SEEDED_UPPGIFT_VERSION + 1);
    }
 
    @Test
@@ -172,7 +172,7 @@ class OulUppgiftServiceStatusTest extends OulUppgiftServiceTestBase
 
       RegelCommonData stored = regelCommonDataStorage.getRegelCommonData(handlaggningId);
       assertThat(stored).isNotNull();
-      assertThat(stored.uppgift().utforarId()).isNull();
+      assertThat(stored.uppgift().utforare()).isNull();
       assertThat(stored.uppgift().uppgiftStatus()).isEqualTo(NEW_STATUS);
       assertThat(stored.uppgift().version()).isEqualTo(SEEDED_UPPGIFT_VERSION + 1);
    }
