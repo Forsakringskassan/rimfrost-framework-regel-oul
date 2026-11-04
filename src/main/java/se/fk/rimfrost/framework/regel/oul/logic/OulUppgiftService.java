@@ -381,8 +381,7 @@ public class OulUppgiftService implements OulHandlerInterface
 
          tryEndOulUppgift(oulStatus.uppgiftId(), "Internal error");
          cleanupCorrelation(oulStatus.handlaggningId());
-         sendErrorResponse(oulStatus.handlaggningId(), cloudEventData, regelErrorInformation,
-               oulStatus.processInfo().replyTopic());
+         sendErrorResponse(oulStatus.handlaggningId(), cloudEventData, regelErrorInformation);
       }
    }
 
@@ -494,7 +493,7 @@ public class OulUppgiftService implements OulHandlerInterface
    }
 
    private void sendErrorResponse(UUID handlaggningId, CloudEventData cloudEventData,
-         RegelErrorInformation regelErrorInformation, String replyTo)
+         RegelErrorInformation regelErrorInformation)
    {
       if (handlaggningId == null || cloudEventData == null || regelErrorInformation == null)
       {
@@ -521,7 +520,7 @@ public class OulUppgiftService implements OulHandlerInterface
                .source(cloudEventData.source())
                .regelErrorInformation(regelErrorInformation)
                .build();
-         regelKafkaProducer.sendRegelResponse(regelResponse, Objects.requireNonNull(replyTo));
+         regelKafkaProducer.sendRegelResponse(regelResponse);
       }
       catch (IllegalStateException e)
       {
