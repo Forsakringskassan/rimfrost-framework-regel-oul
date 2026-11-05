@@ -2,7 +2,6 @@ package se.fk.rimfrost.framework.regel.oul.logic;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,9 +23,7 @@ import se.fk.rimfrost.framework.regel.oul.helpers.WireMockRegelOul;
 import se.fk.rimfrost.framework.regel.logic.entity.CloudEventData;
 import se.fk.rimfrost.framework.regel.oul.logic.exception.OulServiceException;
 import se.fk.rimfrost.framework.regel.oul.storage.CloudEventDataStorage;
-import se.fk.rimfrost.framework.regel.oul.storage.ProcessTopicInfoStorage;
 import se.fk.rimfrost.framework.regel.oul.storage.RegelCommonDataStorage;
-import se.fk.rimfrost.framework.regel.oul.storage.entity.ImmutableProcessTopicInfo;
 import se.fk.rimfrost.framework.regel.oul.storage.entity.ImmutableRegelCommonData;
 import se.fk.rimfrost.framework.regel.oul.storage.entity.RegelCommonData;
 
@@ -60,9 +57,6 @@ class OulUppgiftServiceEndAndCleanupTest extends OulUppgiftServiceTestBase
 
    @Inject
    CloudEventDataStorage cloudEventDataStorage;
-
-   @Inject
-   ProcessTopicInfoStorage processTopicInfoStorage;
 
    @Inject
    RegelCommonDataStorage regelCommonDataStorage;
@@ -114,8 +108,6 @@ class OulUppgiftServiceEndAndCleanupTest extends OulUppgiftServiceTestBase
       UUID handlaggningId = UUID.randomUUID();
       CloudEventData cloudEventData = OulTestData.cloudEventData();
       cloudEventDataStorage.setCloudEventData(handlaggningId, cloudEventData);
-      processTopicInfoStorage.setProcessTopicInfo(handlaggningId,
-            ImmutableProcessTopicInfo.builder().replyTopic(OulTestData.DEFAULT_REPLY_TOPIC).build());
       RegelCommonData regelCommonData = ImmutableRegelCommonData.builder()
             .uppgift(OulTestData.seedUppgift())
             .oulUppgiftId(UUID.fromString(WireMockRegelOul.DEFAULT_UPPGIFT_ID))
@@ -123,13 +115,11 @@ class OulUppgiftServiceEndAndCleanupTest extends OulUppgiftServiceTestBase
       regelCommonDataStorage.setRegelCommonData(handlaggningId, regelCommonData);
 
       assertThat(cloudEventDataStorage.getCloudEventData(handlaggningId)).isNotNull();
-      assertThat(processTopicInfoStorage.getProcessTopicInfo(handlaggningId)).isNotNull();
       assertThat(regelCommonDataStorage.getRegelCommonData(handlaggningId)).isNotNull();
 
       oulUppgiftService.cleanupCorrelation(handlaggningId);
 
       assertThat(cloudEventDataStorage.getCloudEventData(handlaggningId)).isNull();
-      assertThat(processTopicInfoStorage.getProcessTopicInfo(handlaggningId)).isNull();
       assertThat(regelCommonDataStorage.getRegelCommonData(handlaggningId)).isNull();
    }
 }

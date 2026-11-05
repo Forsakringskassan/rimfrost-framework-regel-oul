@@ -13,9 +13,7 @@ import se.fk.rimfrost.framework.regel.oul.helpers.WireMockRegelOul;
 import se.fk.rimfrost.framework.regel.logic.entity.CloudEventData;
 import se.fk.rimfrost.framework.regel.oul.logic.entity.OulCorrelationData;
 import se.fk.rimfrost.framework.regel.oul.storage.CloudEventDataStorage;
-import se.fk.rimfrost.framework.regel.oul.storage.ProcessTopicInfoStorage;
 import se.fk.rimfrost.framework.regel.oul.storage.RegelCommonDataStorage;
-import se.fk.rimfrost.framework.regel.oul.storage.entity.ImmutableProcessTopicInfo;
 import se.fk.rimfrost.framework.regel.oul.storage.entity.ImmutableRegelCommonData;
 import se.fk.rimfrost.framework.regel.oul.storage.entity.RegelCommonData;
 
@@ -39,9 +37,6 @@ class OulUppgiftServiceCorrelationReadTest extends OulUppgiftServiceTestBase
    RegelCommonDataStorage regelCommonDataStorage;
 
    @Inject
-   ProcessTopicInfoStorage processTopicInfoStorage;
-
-   @Inject
    CloudEventDataStorage cloudEventDataStorage;
 
    @Test
@@ -57,8 +52,6 @@ class OulUppgiftServiceCorrelationReadTest extends OulUppgiftServiceTestBase
             .build();
 
       regelCommonDataStorage.setRegelCommonData(handlaggningId, commonData);
-      processTopicInfoStorage.setProcessTopicInfo(handlaggningId,
-            ImmutableProcessTopicInfo.builder().replyTopic(OulTestData.DEFAULT_REPLY_TOPIC).build());
       cloudEventDataStorage.setCloudEventData(handlaggningId, cloudEventData);
 
       OulCorrelationData result = oulUppgiftService.getCorrelationData(handlaggningId);
@@ -66,7 +59,6 @@ class OulUppgiftServiceCorrelationReadTest extends OulUppgiftServiceTestBase
       assertThat(result).isNotNull();
       assertThat(result.oulUppgiftId()).isEqualTo(oulUppgiftId);
       assertThat(result.uppgift()).isEqualTo(commonData.uppgift());
-      assertThat(result.replyTopic()).isEqualTo(OulTestData.DEFAULT_REPLY_TOPIC);
       assertThat(result.cloudEventData()).isEqualTo(cloudEventData);
    }
 
@@ -77,25 +69,6 @@ class OulUppgiftServiceCorrelationReadTest extends OulUppgiftServiceTestBase
       UUID handlaggningId = UUID.randomUUID();
       CloudEventData cloudEventData = OulTestData.cloudEventData();
 
-      processTopicInfoStorage.setProcessTopicInfo(handlaggningId,
-            ImmutableProcessTopicInfo.builder().replyTopic(OulTestData.DEFAULT_REPLY_TOPIC).build());
-      cloudEventDataStorage.setCloudEventData(handlaggningId, cloudEventData);
-
-      assertThat(oulUppgiftService.getCorrelationData(handlaggningId)).isNull();
-   }
-
-   @Test
-   @DisplayName("FROUL-FR-01.11: getCorrelationData returnerar null när ProcessTopicInfo saknas")
-   void getCorrelationData_should_return_null_when_process_topic_info_missing()
-   {
-      UUID handlaggningId = UUID.randomUUID();
-      CloudEventData cloudEventData = OulTestData.cloudEventData();
-      RegelCommonData commonData = ImmutableRegelCommonData.builder()
-            .uppgift(OulTestData.seedUppgift())
-            .oulUppgiftId(UUID.randomUUID())
-            .build();
-
-      regelCommonDataStorage.setRegelCommonData(handlaggningId, commonData);
       cloudEventDataStorage.setCloudEventData(handlaggningId, cloudEventData);
 
       assertThat(oulUppgiftService.getCorrelationData(handlaggningId)).isNull();
@@ -112,8 +85,6 @@ class OulUppgiftServiceCorrelationReadTest extends OulUppgiftServiceTestBase
             .build();
 
       regelCommonDataStorage.setRegelCommonData(handlaggningId, commonData);
-      processTopicInfoStorage.setProcessTopicInfo(handlaggningId,
-            ImmutableProcessTopicInfo.builder().replyTopic(OulTestData.DEFAULT_REPLY_TOPIC).build());
 
       assertThat(oulUppgiftService.getCorrelationData(handlaggningId)).isNull();
    }

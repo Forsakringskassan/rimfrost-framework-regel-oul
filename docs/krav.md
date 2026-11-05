@@ -69,10 +69,6 @@ underliggande ramverk upprepas inte.
 
 - **FROUL-FR-03.1** Ramverket ska lagra CloudEvent-attributen från den inkommande regelförfrågan
   persistent för korrelation under hela regelkörningens livscykel.
-- **FROUL-FR-03.2** Ramverket ska lagra `replyTo` från den inkommande regelförfrågan persistent
-  för återkoppling vid regelkörningens avslut.
-- **FROUL-FR-03.3** Ramverket ska lagra `ProcessTopicInfo` (routing till reply-subtopic för
-  OUL-statusnotifieringar) persistent per handläggning.
 - **FROUL-FR-03.4** Ramverket ska lagra `RegelCommonData` (uppgifts-ID och OUL:s uppgifts-ID)
   persistent per handläggning.
 - **FROUL-FR-03.5** Ramverket ska tillhandahålla en operation för att rensa samtliga lagrade

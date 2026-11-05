@@ -43,7 +43,6 @@ class PersistenceStartupTest
 
       assertThat(tableNames).contains(
             TABLE_PREFIX + "_common_data",
-            TABLE_PREFIX + "_cloud_event_data",
-            TABLE_PREFIX + "_process_topic_info");
+            TABLE_PREFIX + "_cloud_event_data");
    }
 }

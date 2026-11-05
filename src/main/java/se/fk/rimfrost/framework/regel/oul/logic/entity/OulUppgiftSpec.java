@@ -33,9 +33,6 @@ public interface OulUppgiftSpec
     */
    Handlaggning handlaggning();
 
-   /** Kafka topic the eventual regel-response will be sent back on. */
-   String replyTo();
-
    /** Typed CloudEvent metadata persisted for later correlation. */
    CloudEventData cloudEventData();
 

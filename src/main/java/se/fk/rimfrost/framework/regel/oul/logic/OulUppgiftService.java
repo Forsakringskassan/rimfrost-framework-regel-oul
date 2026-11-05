@@ -4,7 +4,6 @@ import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.time.OffsetDateTime;
-import java.util.Objects;
 import java.util.UUID;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
@@ -42,11 +41,8 @@ import se.fk.rimfrost.framework.regel.oul.logic.entity.OulCorrelationData;
 import se.fk.rimfrost.framework.regel.oul.logic.entity.OulUppgiftSpec;
 import se.fk.rimfrost.framework.regel.oul.logic.exception.OulServiceException;
 import se.fk.rimfrost.framework.regel.oul.storage.CloudEventDataStorage;
-import se.fk.rimfrost.framework.regel.oul.storage.ProcessTopicInfoStorage;
 import se.fk.rimfrost.framework.regel.oul.storage.RegelCommonDataStorage;
-import se.fk.rimfrost.framework.regel.oul.storage.entity.ImmutableProcessTopicInfo;
 import se.fk.rimfrost.framework.regel.oul.storage.entity.ImmutableRegelCommonData;
-import se.fk.rimfrost.framework.regel.oul.storage.entity.ProcessTopicInfo;
 import se.fk.rimfrost.framework.regel.oul.storage.entity.RegelCommonData;
 
 /**
@@ -55,9 +51,9 @@ import se.fk.rimfrost.framework.regel.oul.storage.entity.RegelCommonData;
  * handläggning.
  *
  * <p>Encapsulates the OUL adapter call together with the three correlation stores
- * ({@link CloudEventDataStorage}, {@link ProcessTopicInfoStorage},
- * {@link RegelCommonDataStorage}) so consumers do not repeat the creation + persist
- * + orphan-cleanup pattern in every regel implementation.
+ * ({@link CloudEventDataStorage}, {@link RegelCommonDataStorage}) so consumers do
+ * not repeat the creation + persist + orphan-cleanup pattern in every regel
+ * implementation.
  *
  * <p>The OUL reply-subtopic is injected from the {@code kafka.subtopic}
  * configuration property; consumers do not pass it on {@link OulUppgiftSpec}.
@@ -90,9 +86,6 @@ public class OulUppgiftService implements OulHandlerInterface
    CloudEventDataStorage cloudEventDataStorage;
 
    @Inject
-   ProcessTopicInfoStorage processTopicInfoStorage;
-
-   @Inject
    RegelCommonDataStorage regelCommonDataStorage;
 
    @Inject
@@ -101,7 +94,7 @@ public class OulUppgiftService implements OulHandlerInterface
    /**
     * Creates an OUL uppgift, updates the handläggning with the new uppgift
     * reference, and persists correlation state (CloudEventData,
-    * ProcessTopicInfo, RegelCommonData) for the handläggning.
+    * RegelCommonData) for the handläggning.
     *
     * <p>If the handläggning update or any persistence step fails after the OUL
     * uppgift has been created, the just-created OUL uppgift is best-effort
@@ -137,8 +130,6 @@ public class OulUppgiftService implements OulHandlerInterface
          updateHandlaggning(handlaggningUpdate, spec.cloudEventData());
 
          writeCloudEventData(spec.handlaggningId(), spec.cloudEventData());
-         writeProcessTopicInfo(spec.handlaggningId(),
-               ImmutableProcessTopicInfo.builder().replyTopic(spec.replyTo()).build());
 
          RegelCommonData commonData = ImmutableRegelCommonData.builder()
                .uppgift(uppgift)
@@ -252,16 +243,14 @@ public class OulUppgiftService implements OulHandlerInterface
    public OulCorrelationData getCorrelationData(UUID handlaggningId)
    {
       var commonData = regelCommonDataStorage.getRegelCommonData(handlaggningId);
-      var processInfo = processTopicInfoStorage.getProcessTopicInfo(handlaggningId);
       var cloudEventData = cloudEventDataStorage.getCloudEventData(handlaggningId);
-      if (commonData == null || processInfo == null || cloudEventData == null)
+      if (commonData == null || cloudEventData == null)
       {
          return null;
       }
       return ImmutableOulCorrelationData.builder()
             .oulUppgiftId(commonData.oulUppgiftId())
             .uppgift(commonData.uppgift())
-            .replyTopic(processInfo.replyTopic())
             .cloudEventData(cloudEventData)
             .build();
    }
@@ -309,7 +298,6 @@ public class OulUppgiftService implements OulHandlerInterface
    public void cleanupCorrelation(UUID handlaggningId)
    {
       tryDeleteRegelCommonData(handlaggningId);
-      tryDeleteProcessTopicInfo(handlaggningId);
       tryDeleteCloudEventData(handlaggningId);
    }
 
@@ -326,7 +314,7 @@ public class OulUppgiftService implements OulHandlerInterface
     *
     * <p>On any failure during processing, the OUL uppgift is best-effort ended,
     * correlation state is best-effort cleaned up, and an error response is sent
-    * on the reply topic carried on the OUL status message.
+    * on the configured regel response topic.
     *
     * @param oulStatus the OUL status message
     */
@@ -400,7 +388,6 @@ public class OulUppgiftService implements OulHandlerInterface
             .aktivitetId(spec.aktivitetId())
             .processvyUrl(spec.processvyUrl())
             .processInfo(ImmutableProcessInfo.builder()
-                  .replyTopic(spec.replyTo())
                   .cloudeventAttributes(spec.cloudEventAttributes())
                   .build())
             .assignable(spec.assignable())
@@ -440,22 +427,6 @@ public class OulUppgiftService implements OulHandlerInterface
                "Failed to write CloudEventData to correlation storage. handlaggningId: %s", handlaggningId);
          throw new RegelCancelledException(
                createRegelErrorInformation(RegelFelkod.RIMFROST_CLOUD_EVENT_DATA_WRITE_FAILURE, message),
-               message, e);
-      }
-   }
-
-   private void writeProcessTopicInfo(UUID handlaggningId, ProcessTopicInfo processTopicInfo)
-   {
-      try
-      {
-         processTopicInfoStorage.setProcessTopicInfo(handlaggningId, processTopicInfo);
-      }
-      catch (Exception e)
-      {
-         String message = String.format(
-               "Failed to write ProcessTopicInfo to correlation storage. handlaggningId: %s", handlaggningId);
-         throw new RegelCancelledException(
-               createRegelErrorInformation(RegelFelkod.RIMFROST_PROCESS_TOPIC_INFO_WRITE_FAILURE, message),
                message, e);
       }
    }
@@ -539,18 +510,6 @@ public class OulUppgiftService implements OulHandlerInterface
       catch (Exception e)
       {
          LOGGER.error("Could not delete CloudEventData. handlaggningId: {}", handlaggningId, e);
-      }
-   }
-
-   private void tryDeleteProcessTopicInfo(UUID handlaggningId)
-   {
-      try
-      {
-         processTopicInfoStorage.deleteProcessTopicInfo(handlaggningId);
-      }
-      catch (Exception e)
-      {
-         LOGGER.error("Could not delete ProcessTopicInfo. handlaggningId: {}", handlaggningId, e);
       }
    }
 
