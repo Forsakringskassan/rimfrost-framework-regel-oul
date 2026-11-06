@@ -2,6 +2,19 @@
 
 Changelog of rimfrost-framework-regel-oul.
 
+## 0.3.0 (2026-11-06)
+
+### Features
+
+-  Remove replyTo from OulUppgiftSpec and bump dependency versions ([616ff](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/616fffde8401a70) Lars Persson)  
+
+### Bug Fixes
+
+-  Bump dependency versions ([45cd6](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/45cd6e4673eae4e) Lars Persson)  
+
+### Dependency updates
+
+- update forsakringskassan/.github digest to 625efb1 ([601a0](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/601a058a20e50a6) renovate[bot])  
 ## 0.2.0 (2026-10-30)
 
 ### Features
