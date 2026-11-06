@@ -55,7 +55,6 @@ public abstract class OulUppgiftServiceTestBase
    {
       entityManager.createNativeQuery("TRUNCATE TABLE regel_oul_test.regel_oul_test_cloud_event_data").executeUpdate();
       entityManager.createNativeQuery("TRUNCATE TABLE regel_oul_test.regel_oul_test_common_data").executeUpdate();
-      entityManager.createNativeQuery("TRUNCATE TABLE regel_oul_test.regel_oul_test_process_topic_info").executeUpdate();
       regelResponsesSink().clear();
       if (WireMockRegelOul.getWireMockServer() != null)
       {

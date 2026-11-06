@@ -13,8 +13,7 @@
       "handlaggning_id": "5367f6b8-cc4a-11f0-8de9-199901011234",
       "status": "AVSLUTAD",
       "process_info": {
-        "cloudevent_attributes": {},
-        "reply_topic": "oul-test"
+        "cloudevent_attributes": {}
       }
     }
   }

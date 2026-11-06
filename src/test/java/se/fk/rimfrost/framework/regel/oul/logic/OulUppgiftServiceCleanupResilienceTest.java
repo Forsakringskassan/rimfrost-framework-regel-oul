@@ -16,19 +16,18 @@ import se.fk.rimfrost.framework.regel.oul.helpers.OulTestData;
 import se.fk.rimfrost.framework.regel.oul.helpers.WireMockRegelOul;
 import se.fk.rimfrost.framework.regel.logic.entity.CloudEventData;
 import se.fk.rimfrost.framework.regel.oul.storage.CloudEventDataStorage;
-import se.fk.rimfrost.framework.regel.oul.storage.ProcessTopicInfoStorage;
 import se.fk.rimfrost.framework.regel.oul.storage.RegelCommonDataStorage;
 import se.fk.rimfrost.framework.regel.oul.storage.entity.ImmutableRegelCommonData;
 import se.fk.rimfrost.framework.regel.oul.storage.entity.RegelCommonData;
 
 /**
  * Tests {@link OulUppgiftService#cleanupCorrelation(UUID)} best-effort
- * semantics (FROUL-FR-03.6): a failure in one of the three delete operations
- * must not prevent the other two from being executed.
+ * semantics (FROUL-FR-03.6): a failure in one of the delete operations
+ * must not prevent the others from being executed.
  *
- * <p>Uses {@code @InjectMock} on {@link ProcessTopicInfoStorage} configured to
- * throw on {@code delete}, while the other two storage beans remain the real
- * JPA implementations so that "the other two were deleted" can be asserted by
+ * <p>Uses {@code @InjectMock} on {@link RegelCommonDataStorage} configured to
+ * throw on {@code delete}, while the other storage beans remain the real
+ * JPA implementations so that "the others were deleted" can be asserted by
  * reading through the real storage API after seeding real rows.
  *
  * <p>The happy-path counterpart (FROUL-FR-03.5) lives in
@@ -46,9 +45,6 @@ class OulUppgiftServiceCleanupResilienceTest extends OulUppgiftServiceTestBase
    CloudEventDataStorage cloudEventDataStorage;
 
    @InjectMock
-   ProcessTopicInfoStorage processTopicInfoStorage;
-
-   @Inject
    RegelCommonDataStorage regelCommonDataStorage;
 
    @Test
@@ -57,7 +53,7 @@ class OulUppgiftServiceCleanupResilienceTest extends OulUppgiftServiceTestBase
    {
       UUID handlaggningId = UUID.randomUUID();
       doThrow(new RuntimeException("simulated delete failure"))
-            .when(processTopicInfoStorage).deleteProcessTopicInfo(any());
+            .when(regelCommonDataStorage).deleteRegelCommonData(any());
 
       CloudEventData cloudEventData = OulTestData.cloudEventData();
       cloudEventDataStorage.setCloudEventData(handlaggningId, cloudEventData);
@@ -68,12 +64,10 @@ class OulUppgiftServiceCleanupResilienceTest extends OulUppgiftServiceTestBase
       regelCommonDataStorage.setRegelCommonData(handlaggningId, regelCommonData);
 
       assertThat(cloudEventDataStorage.getCloudEventData(handlaggningId)).isNotNull();
-      assertThat(regelCommonDataStorage.getRegelCommonData(handlaggningId)).isNotNull();
 
       oulUppgiftService.cleanupCorrelation(handlaggningId);
 
-      verify(processTopicInfoStorage).deleteProcessTopicInfo(handlaggningId);
+      verify(regelCommonDataStorage).deleteRegelCommonData(handlaggningId);
       assertThat(cloudEventDataStorage.getCloudEventData(handlaggningId)).isNull();
-      assertThat(regelCommonDataStorage.getRegelCommonData(handlaggningId)).isNull();
    }
 }

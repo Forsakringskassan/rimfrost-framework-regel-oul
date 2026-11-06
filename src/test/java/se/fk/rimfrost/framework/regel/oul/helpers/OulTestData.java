@@ -30,7 +30,6 @@ import se.fk.rimfrost.framework.regel.logic.entity.ImmutableCloudEventData;
  */
 public final class OulTestData
 {
-   public static final String DEFAULT_REPLY_TOPIC = "regel-response-test";
    public static final String DEFAULT_PROCESSVY_URL = "/process/vah";
    public static final String DEFAULT_UTFORAR_TYP = "PID";
    public static final String DEFAULT_UTFORAR_VARDE = "197001010000";
@@ -107,7 +106,6 @@ public final class OulTestData
       return ImmutableOulUppgiftSpec.builder()
             .handlaggningId(handlaggning.id())
             .handlaggning(handlaggning)
-            .replyTo(DEFAULT_REPLY_TOPIC)
             .cloudEventData(cloudEventData)
             .cloudEventAttributes(CloudEventAttributesMapper.toAttributes(cloudEventData))
             .regel("test-regel")
@@ -172,7 +170,6 @@ public final class OulTestData
                   .build())
             .uppgiftStatus(uppgiftStatus)
             .processInfo(ImmutableProcessInfo.builder()
-                  .replyTopic(DEFAULT_REPLY_TOPIC)
                   .cloudeventAttributes(attributes)
                   .build())
             .planeradTill(OffsetDateTime.now().plusDays(1).truncatedTo(ChronoUnit.MICROS))
@@ -198,7 +195,6 @@ public final class OulTestData
             .uppgiftId(uppgiftId)
             .uppgiftStatus(uppgiftStatus)
             .processInfo(ImmutableProcessInfo.builder()
-                  .replyTopic(DEFAULT_REPLY_TOPIC)
                   .cloudeventAttributes(attributes)
                   .build())
             .planeradTill(OffsetDateTime.now().plusDays(1).truncatedTo(ChronoUnit.MICROS))

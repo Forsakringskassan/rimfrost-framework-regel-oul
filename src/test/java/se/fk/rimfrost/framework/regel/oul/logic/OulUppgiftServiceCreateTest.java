@@ -3,12 +3,6 @@ package se.fk.rimfrost.framework.regel.oul.logic;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,19 +16,14 @@ import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import se.fk.rimfrost.framework.handlaggning.model.Handlaggning;
-import se.fk.rimfrost.framework.oul.exception.OulException;
-import se.fk.rimfrost.framework.oul.model.OperativUppgift;
 import se.fk.rimfrost.framework.regel.oul.base.OulUppgiftServiceTestBase;
 import se.fk.rimfrost.framework.regel.oul.helpers.OulTestData;
 import se.fk.rimfrost.framework.regel.oul.helpers.WireMockRegelOul;
 import se.fk.rimfrost.framework.regel.logic.entity.CloudEventData;
 import se.fk.rimfrost.framework.regel.oul.logic.entity.ImmutableOulUppgiftSpec;
 import se.fk.rimfrost.framework.regel.oul.logic.entity.OulUppgiftSpec;
-import se.fk.rimfrost.framework.regel.oul.logic.exception.OulServiceException;
 import se.fk.rimfrost.framework.regel.oul.storage.CloudEventDataStorage;
-import se.fk.rimfrost.framework.regel.oul.storage.ProcessTopicInfoStorage;
 import se.fk.rimfrost.framework.regel.oul.storage.RegelCommonDataStorage;
-import se.fk.rimfrost.framework.regel.oul.storage.entity.ProcessTopicInfo;
 import se.fk.rimfrost.framework.regel.oul.storage.entity.RegelCommonData;
 
 /**
@@ -57,9 +46,6 @@ class OulUppgiftServiceCreateTest extends OulUppgiftServiceTestBase
 
    @Inject
    CloudEventDataStorage cloudEventDataStorage;
-
-   @Inject
-   ProcessTopicInfoStorage processTopicInfoStorage;
 
    @Inject
    RegelCommonDataStorage regelCommonDataStorage;
@@ -209,18 +195,6 @@ class OulUppgiftServiceCreateTest extends OulUppgiftServiceTestBase
       assertThat(stored.type()).isEqualTo(ced.type());
       assertThat(stored.source()).isEqualTo(ced.source());
       assertThat(stored.kogitoprocinstanceid()).isEqualTo(ced.kogitoprocinstanceid());
-   }
-
-   @Test
-   @DisplayName("FROUL-FR-03.2 & FROUL-FR-03.3: replyTo lagras i ProcessTopicInfo per handläggning")
-   void createOulUppgift_should_persist_reply_topic_in_process_topic_info() throws Exception
-   {
-      UUID handlaggningId = UUID.randomUUID();
-      createDefault(handlaggningId, OulTestData.cloudEventData());
-
-      ProcessTopicInfo stored = processTopicInfoStorage.getProcessTopicInfo(handlaggningId);
-      assertThat(stored).isNotNull();
-      assertThat(stored.replyTopic()).isEqualTo(OulTestData.DEFAULT_REPLY_TOPIC);
    }
 
    @Test

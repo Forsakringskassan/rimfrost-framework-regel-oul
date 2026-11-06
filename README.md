@@ -26,9 +26,8 @@ och konsumeras av regelramverk som behöver OUL-uppgifter, till exempel
   handläggningstjänsten.
 - **Statusnotifieringar** — prenumererar på OUL:s statusuppdateringar via Kafka och
   synkroniserar aktuell uppgiftsstatus till handläggningstjänsten.
-- **Korrelationslagring** — persisterar CloudEvent-attribut, `replyTo`, `ProcessTopicInfo`
-  och `RegelCommonData` per handläggning så att regelkörningen kan avslutas långt efter
-  att den startades.
+- **Korrelationslagring** — persisterar CloudEvent-attribut och `RegelCommonData` 
+  per handläggning så att regelkörningen kan avslutas långt efter att den startades.
 
 ## Användning
 
@@ -42,7 +41,6 @@ OperativUppgift uppgift = oulUppgiftService.createOulUppgift(
     ImmutableOulUppgiftSpec.builder()
         .handlaggningId(handlaggningId)
         .handlaggning(handlaggning)
-        .replyTo(replyTo)
         .cloudEventData(cloudEventData)
         .cloudEventAttributes(cloudEventAttributes)
         .regel("min-regel")
@@ -78,7 +76,6 @@ Ramverket skapar tre tabeller per regelimplementation:
 |---------------------------------|-------------------------------------------------------------|
 | `{prefix}_common_data`          | OUL-uppgifts-ID och tillhörande uppgiftsmetadata            |
 | `{prefix}_cloud_event_data`     | CloudEvent-attribut från regelförfrågan för korrelation vid avslut |
-| `{prefix}_process_topic_info`   | `replyTo` och routing till reply-subtopic för OUL-statusnotifieringar |
 
 Prefixet konfigureras via `regel.persistence.table-prefix` och måste vara unikt per
 regelimplementation. Migrationer hanteras av Flyway.

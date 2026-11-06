@@ -22,9 +22,6 @@ public interface OulCorrelationData
    /** The handläggning uppgift snapshot, from {@code RegelCommonData}. */
    Uppgift uppgift();
 
-   /** The Kafka reply topic, from {@code ProcessTopicInfo}. */
-   String replyTopic();
-
    /** The CloudEvent envelope from the originating regel request. */
    CloudEventData cloudEventData();
 }
