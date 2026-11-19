@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.UUID;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableIdtyp;
+import se.fk.rimfrost.framework.handlaggning.model.ImmutableRegelutfall;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgift;
 import se.fk.rimfrost.framework.handlaggning.model.ImmutableUppgiftSpecifikation;
 import se.fk.rimfrost.framework.handlaggning.model.Uppgift;
@@ -48,6 +49,8 @@ class RegelCommonDataMapper
       entity.uppgiftFssaInformation = uppgift.fSSAinformation();
       entity.uppgiftSpecifikationId = uppgift.uppgiftSpecifikation().id();
       entity.uppgiftSpecifikationVersion = uppgift.uppgiftSpecifikation().version();
+      entity.uppgiftRegelutfallVarde = uppgift.regelutfall() != null ? uppgift.regelutfall().varde() : null;
+      entity.uppgiftKommentar = uppgift.kommentar();
 
       if (uppgift.utforare() != null)
       {
@@ -68,7 +71,8 @@ class RegelCommonDataMapper
             .uppgiftSpecifikation(ImmutableUppgiftSpecifikation.builder()
                   .id(entity.uppgiftSpecifikationId)
                   .version(entity.uppgiftSpecifikationVersion)
-                  .build());
+                  .build())
+            .kommentar(entity.uppgiftKommentar);
 
       if (entity.uppgiftUtfordTs != null)
       {
@@ -84,6 +88,10 @@ class RegelCommonDataMapper
                .typId(entity.uppgiftUtforarIdTypId)
                .varde(entity.uppgiftUtforarIdVarde)
                .build());
+      }
+      if (entity.uppgiftRegelutfallVarde != null)
+      {
+         builder.regelutfall(ImmutableRegelutfall.builder().varde(entity.uppgiftRegelutfallVarde).build());
       }
 
       return builder.build();
