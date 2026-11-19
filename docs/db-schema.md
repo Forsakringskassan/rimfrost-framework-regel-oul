@@ -53,6 +53,8 @@ CREATE TABLE {prefix}_common_data (
     uppgift_fssa_information      VARCHAR(255) NOT NULL,
     uppgift_specifikation_id      UUID         NOT NULL,
     uppgift_specifikation_version INTEGER      NOT NULL,
+    uppgift_regelutfall_varde     VARCHAR(255),
+    uppgift_kommentar             VARCHAR,
     oul_uppgift_id                UUID,
     version                       BIGINT       NOT NULL DEFAULT 0,
     created_at                    TIMESTAMPTZ  NOT NULL,

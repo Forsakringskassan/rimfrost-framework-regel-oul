@@ -62,6 +62,12 @@ public class RegelCommonDataEntity
    @Column(name = "uppgift_specifikation_version")
    Integer uppgiftSpecifikationVersion;
 
+   @Column(name = "uppgift_regelutfall_varde")
+   String uppgiftRegelutfallVarde;
+
+   @Column(name = "uppgift_kommentar")
+   String uppgiftKommentar;
+
    @Column(name = "oul_uppgift_id")
    UUID oulUppgiftId;
 
