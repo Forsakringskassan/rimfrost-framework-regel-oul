@@ -2,6 +2,15 @@
 
 Changelog of rimfrost-framework-regel-oul.
 
+## 0.3.2 (2026-11-19)
+
+### Bug Fixes
+
+-  Persist regelutfall and kommentar fields from uppgift ([b411f](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/b411f6296d4590b) Lars Persson)  
+
+### Dependency updates
+
+- update dependency io.smallrye:jandex-maven-plugin to v3.6.1 ([17ce3](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/17ce3deee6c3254) renovate[bot])  
 ## 0.3.1 (2026-11-10)
 
 ### Bug Fixes
