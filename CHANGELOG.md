@@ -2,6 +2,12 @@
 
 Changelog of rimfrost-framework-regel-oul.
 
+## 0.3.3 (2026-11-20)
+
+### Bug Fixes
+
+-  bump rimfrost-framework-regel-oul-asyncapi to 0.0.5, rimfrost-framework-regel to 1.6.2, rimfrost-framework-oul-adapter to 1.2.3 ([bdc01](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/bdc01dc00bc6456) Ulf Slunga)  
+
 ## 0.3.2 (2026-11-19)
 
 ### Bug Fixes
