@@ -50,6 +50,11 @@ underliggande ramverk upprepas inte.
   ska lagra den uppdaterade uppgiften i `RegelCommonData` och spegla förändringen via ett
   handläggnings-PUT, utan att konsumenten behöver interagera med lagring eller
   handläggningstjänst direkt.
+- **FROUL-FR-01.16** Ramverket ska tillhandahålla en operation (`getOulUppgiftUtforare`) för att
+  hämta identiteten på den individ som är tilldelad till en OUL-uppgift. Om uppgiften är tilldelad till någon
+  så ska metoden returnera en `Optional` innehållande identiteten, och annars så ska metoden returnera en tom
+  `Optional`. Om fel uppstår vid läsning av identiteten så ska felet kastas vidare som exception så att den som 
+  anropat tjänsten kan hantera felet.
 
 ### FROUL-FR-02 — Hantering av OUL-statusnotifieringar
 
