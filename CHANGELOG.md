@@ -2,6 +2,14 @@
 
 Changelog of rimfrost-framework-regel-oul.
 
+## 0.3.4 (2026-11-24)
+
+### Bug Fixes
+
+-  Add support for fetching OUL uppgift utforare ([f9423](https://github.com/Forsakringskassan/rimfrost-framework-regel-oul/commit/f94235c971512e0) Lars Persson)  
+
+## rimfrost-1_3 (2026-11-20)
+
 ## 0.3.3 (2026-11-20)
 
 ### Bug Fixes
