@@ -4,6 +4,7 @@ import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import java.util.UUID;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
@@ -370,6 +371,30 @@ public class OulUppgiftService implements OulHandlerInterface
          tryEndOulUppgift(oulStatus.uppgiftId(), "Internal error");
          cleanupCorrelation(oulStatus.handlaggningId());
          sendErrorResponse(oulStatus.handlaggningId(), cloudEventData, regelErrorInformation);
+      }
+   }
+
+   /**
+    * Return the {@link se.fk.rimfrost.framework.regel.oul.logic.entity.Idtyp} representing the individual assigned as
+    * utforare for the specified OUL uppgift.
+    *
+    * @param uppgiftId OUL uppgift id
+    * @throws OulServiceException if OUL rejects the read request or is unreachable
+    * @return The {@link se.fk.rimfrost.framework.regel.oul.logic.entity.Idtyp} representing the utforare assigned to the OUL uppgift or empty optional if none is assigned
+    */
+   public Optional<se.fk.rimfrost.framework.regel.oul.logic.entity.Idtyp> getOulUppgiftUtforare(UUID uppgiftId)
+         throws OulServiceException
+   {
+      try
+      {
+         var utforare = oulAdapter.getOperativUppgiftUtforare(uppgiftId);
+
+         return utforare.map(idtyp -> se.fk.rimfrost.framework.regel.oul.logic.entity.ImmutableIdtyp.builder()
+               .typId(idtyp.typId()).varde(idtyp.varde()).build());
+      }
+      catch (OulException e)
+      {
+         throw new OulServiceException(toErrorType(e.getErrorType()), e.getMessage(), e);
       }
    }
 
